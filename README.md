@@ -37,13 +37,34 @@
 
 ## 📸 Application Screenshots
 
-| Dashboard View | Dark Mode |
-|----------------|-----------|
-| ![Dashboard](https://via.placeholder.com/400x250?text=Dashboard+View) | ![Dark Mode](https://via.placeholder.com/400x250?text=Dark+Mode) |
+| Dark Mode Dashboard | Light Mode Dashboard |
+|---------------------|---------------------|
+| ![Dark Mode](./frontend/public/DarkMode.png) | ![Dashboard](./frontend/public/Dashboard.png) |
 
-| Task Creation | Mobile View |
-|----------------|-------------|
-| ![Create Task](https://via.placeholder.com/400x250?text=Create+Task) | ![Mobile](https://via.placeholder.com/400x250?text=Mobile+View) |
+| Task Creation Modal | Mobile Responsive View |
+|---------------------|----------------------|
+| ![Task Creation](./frontend/public/Task%20Creation.png) | ![Mobile View](./frontend/public/Mobile.png) |
+
+### 🖼️ Screenshots Description
+
+| Image | Description |
+|-------|-------------|
+| **Dark Mode** | Main dashboard with dark theme, showing task list with priority badges (MEDIUM, HIGH, URGENT) and "In Progress" status indicators |
+| **Dashboard** | Light mode overview with task statistics (3 total, 0 completed) and progress bars showing 50% completion rate |
+| **Task Creation** | Modal form for creating new tasks with title (8/100 chars), description (0/500 chars), and priority selector (Medium selected) |
+| **Mobile View** | Responsive mobile layout with search bar, progress overview (25% complete), and task cards with "Read More" options |
+
+### 🎯 Key UI Features Demonstrated
+
+| Feature | Location |
+|---------|----------|
+| ✅ Dark/Light theme toggle | Both dashboard views |
+| ✅ Priority badges (LOW/MEDIUM/HIGH/URGENT) | Dark Mode screenshot |
+| ✅ Progress tracking | Dashboard (50% bar) |
+| ✅ Form validation | Task Creation (character counters) |
+| ✅ Responsive design | Mobile View |
+| ✅ Task metadata (date, status) | All views |
+| ✅ Optimistic updates | Task Creation footer |
 
 ---
 
