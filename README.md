@@ -103,7 +103,7 @@
 
 ## 🛠️ Technology Stack
 
-### **Frontend (Senior Level)**
+### **Frontend**
 | Category | Technology | Version | Purpose |
 |----------|------------|---------|---------|
 | **Framework** | ![Next.js](https://img.shields.io/badge/Next.js-16.1.3-000000?style=flat-square&logo=next.js) | 16.1.3 | React framework with App Router |
@@ -115,7 +115,7 @@
 | **Testing** | ![Jest](https://img.shields.io/badge/Jest-30.0-C21325?style=flat-square&logo=jest) + ![RTL](https://img.shields.io/badge/RTL-16.0-FF6B6B?style=flat-square) | - | Unit & integration tests (56 tests) |
 | **Date Handling** | ![date-fns](https://img.shields.io/badge/date--fns-4.1-770C56?style=flat-square&logo=date-fns) | 4.1 | Date formatting |
 
-### **Backend (Professional)**
+### **Backend**
 | Category | Technology | Version | Purpose |
 |----------|------------|---------|---------|
 | **Runtime** | ![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?style=flat-square&logo=node.js) | 20.x | JavaScript runtime |
