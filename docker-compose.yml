@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: taskmanager-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: taskmanager_pro
+    ports:
+      - "5433:5432"  # Usamos 5433 para no conflictos con PostgreSQL local
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - taskmanager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: taskmanager-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:admin123@postgres:5432/taskmanager_pro?schema=public
+      FRONTEND_URL: http://localhost:3004
+      NODE_ENV: production
+      JWT_SECRET: tu-secreto-super-seguro-dev-2026
+      PORT: 3005
+    ports:
+      - "3005:3005"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - taskmanager-network
+
+  frontend:
+    build: ./frontend
+    container_name: taskmanager-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3005
+    ports:
+      - "3004:3000"
+    depends_on:
+      - backend
+    networks:
+      - taskmanager-network
+
+volumes:
+  postgres_data:
+
+networks:
+  taskmanager-network:
+    driver: bridge

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: task-manager-backend
+    runtime: node
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: task-manager-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://task-manager-pro.vercel.app
+
+databases:
+  - name: task-manager-db
+    databaseName: taskmanager
+    plan: free
