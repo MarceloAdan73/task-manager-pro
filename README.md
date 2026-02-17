@@ -126,89 +126,102 @@ Password: demo123
 ---
 ## 📁 Project Architecture
 
-```
+```plaintext
 task-manager-pro/
 │
-├── 📁 frontend/                          # Next.js 16 + TypeScript
+├── 📁 frontend/                               # Next.js 16 + TypeScript
 │   ├── 📁 src/
-│   │   ├── 📁 app/                       # App Router
-│   │   │   ├── 📄 layout.tsx             # Root layout with providers
-│   │   │   ├── 📄 page.tsx               # Dashboard page
-│   │   │   └── 📁 login/                  # Login page
+│   │   ├── 📁 app/                            # App Router
+│   │   │   ├── 📄 layout.tsx                  # Root layout with providers
+│   │   │   ├── 📄 page.tsx                    # Dashboard page
+│   │   │   └── 📁 login/                       # Login page
 │   │   │       └── 📄 page.tsx
-│   │   ├── 📁 components/                 # UI Components
-│   │   │   ├── 📁 TaskCard/               # Task card component
+│   │   │
+│   │   ├── 📁 components/                      # UI Components
+│   │   │   ├── 📁 TaskCard/                    # Task card component
 │   │   │   │   ├── 📄 TaskCard.tsx
 │   │   │   │   └── 📄 TaskCard.test.tsx
-│   │   │   ├── 📁 TaskForm/               # Task creation form
+│   │   │   ├── 📁 TaskForm/                    # Task creation form
 │   │   │   │   ├── 📄 TaskForm.tsx
 │   │   │   │   └── 📄 TaskForm.test.tsx
-│   │   │   ├── 📁 TaskList/               # Task list with filters
+│   │   │   ├── 📁 TaskList/                    # Task list with filters
 │   │   │   │   ├── 📄 TaskList.tsx
 │   │   │   │   └── 📄 TaskList.test.tsx
-│   │   │   ├── 📁 TaskEditModal/          # Edit task modal
+│   │   │   ├── 📁 TaskEditModal/               # Edit task modal
 │   │   │   │   ├── 📄 TaskEditModal.tsx
 │   │   │   │   └── 📄 TaskEditModal.test.tsx
-│   │   │   └── 📁 DarkModeToggle/         # Theme switcher
+│   │   │   └── 📁 DarkModeToggle/              # Theme switcher
 │   │   │       ├── 📄 DarkModeToggle.tsx
 │   │   │       └── 📄 DarkModeToggle.test.tsx
-│   │   ├── 📁 context/                    # React Context
-│   │   │   ├── 📄 AuthContext.tsx         # Authentication state
-│   │   │   └── 📄 ThemeContext.tsx        # Dark/light theme
-│   │   ├── 📁 hooks/                       # Custom Hooks
-│   │   │   ├── 📄 useTasks.ts              # Task CRUD with React Query
+│   │   │
+│   │   ├── 📁 context/                          # React Context
+│   │   │   ├── 📄 AuthContext.tsx              # Authentication state
+│   │   │   └── 📄 ThemeContext.tsx             # Dark/light theme
+│   │   │
+│   │   ├── 📁 hooks/                            # Custom Hooks
+│   │   │   ├── 📄 useTasks.ts                  # Task CRUD with React Query
 │   │   │   └── 📄 useTasks.test.tsx
-│   │   ├── 📁 lib/                         # Utilities
-│   │   │   ├── 📁 api/                     # API client
-│   │   │   │   ├── 📄 index.ts             # Fetch wrapper with JWT
+│   │   │
+│   │   ├── 📁 lib/                              # Utilities
+│   │   │   ├── 📁 api/                          # API client
+│   │   │   │   ├── 📄 index.ts                 # Fetch wrapper with JWT
 │   │   │   │   └── 📄 index.test.ts
-│   │   │   └── 📁 types/                   # TypeScript types
+│   │   │   └── 📁 types/                        # TypeScript types
 │   │   │       ├── 📄 task.ts
-│   │   │       ├── 📄 api.types.ts
-│   │   │       └── 📄 index.ts
-│   │   └── 📁 __tests__/                    # Frontend tests (56)
+│   │   │       └── 📄 api.types.ts
+│   │   │
+│   │   └── 📁 __tests__/                        # Frontend tests (56)
 │   │       ├── 📄 setup.ts
-│   │       └── 📄 mocks/
-│   ├── 📄 Dockerfile                         # Multi-stage build
-│   ├── 📄 vercel.json                        # Vercel configuration
-│   ├── 📄 next.config.js                     # Next.js config
-│   ├── 📄 tailwind.config.js                  # Tailwind CSS config
-│   ├── 📄 postcss.config.js                   # PostCSS config
-│   ├── 📄 jest.config.js                      # Jest configuration
-│   ├── 📄 jest.setup.js                       # Jest setup
-│   ├── 📄 tsconfig.json                       # TypeScript config
+│   │       └── 📁 mocks/
+│   │
+│   ├── 📄 Dockerfile                            # Multi-stage build
+│   ├── 📄 vercel.json                           # Vercel configuration
+│   ├── 📄 next.config.js                        # Next.js config
+│   ├── 📄 tailwind.config.js                    # Tailwind CSS config
+│   ├── 📄 postcss.config.js                     # PostCSS config
+│   ├── 📄 jest.config.js                        # Jest configuration
+│   ├── 📄 jest.setup.js                         # Jest setup
+│   ├── 📄 tsconfig.json                         # TypeScript config
 │   ├── 📄 package.json
-│   └── 📄 .env.production.example             # Environment variables example
+│   └── 📄 .env.production.example               # Environment variables example
 │
-├── 📁 backend/                           # Express + TypeScript + Prisma
+├── 📁 backend/                                # Express + TypeScript + Prisma
 │   ├── 📁 src/
-│   │   ├── 📁 controllers/                 # Business logic
-│   │   │   ├── 📄 auth.controller.ts       # Login/register
-│   │   │   └── 📄 task.controller.ts       # Task CRUD
-│   │   ├── 📁 middleware/                   # Express middleware
-│   │   │   ├── 📄 auth.middleware.ts       # JWT verification
-│   │   │   ├── 📄 validate.ts              # Zod validation
-│   │   │   ├── 📄 rateLimit.ts             # Rate limiting
-│   │   │   └── 📄 helmet.ts                # Security headers
-│   │   ├── 📁 routes/                       # API routes
+│   │   ├── 📁 controllers/                      # Business logic
+│   │   │   ├── 📄 auth.controller.ts           # Login/register
+│   │   │   └── 📄 task.controller.ts           # Task CRUD
+│   │   │
+│   │   ├── 📁 middleware/                       # Express middleware
+│   │   │   ├── 📄 auth.middleware.ts           # JWT verification
+│   │   │   ├── 📄 validate.ts                  # Zod validation
+│   │   │   ├── 📄 rateLimit.ts                 # Rate limiting
+│   │   │   └── 📄 helmet.ts                    # Security headers
+│   │   │
+│   │   ├── 📁 routes/                           # API routes
 │   │   │   ├── 📄 auth.routes.ts
 │   │   │   └── 📄 task.routes.ts
-│   │   ├── 📁 validators/                    # Zod schemas
+│   │   │
+│   │   ├── 📁 validators/                       # Zod schemas
 │   │   │   ├── 📄 auth.validator.ts
 │   │   │   └── 📄 task.validator.ts
-│   │   ├── 📁 database/                      # Prisma client
+│   │   │
+│   │   ├── 📁 database/                         # Prisma client
 │   │   │   └── 📄 prisma.ts
-│   │   ├── 📁 config/                        # Configuration
-│   │   │   ├── 📄 env.ts                     # Environment validation
-│   │   │   └── 📄 cors.ts                    # CORS configuration
-│   │   └── 📄 server.ts                       # Entry point
-│   ├── 📁 prisma/                            # Database
-│   │   ├── 📄 schema.prisma                  # Data models
-│   │   ├── 📁 migrations/                     # SQL migrations
+│   │   │
+│   │   ├── 📁 config/                           # Configuration
+│   │   │   ├── 📄 env.ts                       # Environment validation
+│   │   │   └── 📄 cors.ts                      # CORS configuration
+│   │   │
+│   │   └── 📄 server.ts                         # Entry point
+│   │
+│   ├── 📁 prisma/                               # Database
+│   │   ├── 📄 schema.prisma                    # Data models
+│   │   ├── 📁 migrations/                       # SQL migrations
 │   │   │   └── 📁 20260206191328_init/
 │   │   │       └── 📄 migration.sql
-│   │   └── 📄 seed.js                         # Seed data (demo user + tasks)
-│   ├── 📁 tests/                              # Backend tests (30)
+│   │   └── 📄 seed.js                           # Seed data (demo user + tasks)
+│   │
+│   ├── 📁 tests/                                # Backend tests (30)
 │   │   ├── 📁 unit/
 │   │   │   ├── 📄 auth.controller.test.ts
 │   │   │   ├── 📄 task.controller.test.ts
@@ -219,28 +232,29 @@ task-manager-pro/
 │   │       ├── 📄 prisma.mock.ts
 │   │       ├── 📄 env.test.js
 │   │       └── 📄 jest.setup.ts
-│   ├── 📄 Dockerfile                          # Multi-stage build with migrations
-│   ├── 📄 render.yaml                         # Render Blueprint config
-│   ├── 📄 jest.config.js                      # Jest configuration
-│   ├── 📄 tsconfig.json                       # TypeScript config
+│   │
+│   ├── 📄 Dockerfile                            # Multi-stage build with migrations
+│   ├── 📄 render.yaml                           # Render Blueprint config
+│   ├── 📄 jest.config.js                        # Jest configuration
+│   ├── 📄 tsconfig.json                         # TypeScript config
 │   ├── 📄 package.json
-│   └── 📄 .env.production.example              # Environment variables example
+│   └── 📄 .env.production.example               # Environment variables example
 │
-├── 📄 docker-compose.yml                       # Local development stack
+├── 📄 docker-compose.yml                        # Local development stack
 │   ├── 🗄️ PostgreSQL (port 5433)
 │   │   ├── image: postgres:15-alpine
-│   │   ├── volume: postgres_data
-│   │   └── network: taskmanager-network
+│   │   ├── volumes: postgres_data
+│   │   └── networks: taskmanager-network
 │   ├── ⚙️ Backend API (port 3005)
 │   │   ├── build: ./backend
 │   │   ├── depends_on: postgres
-│   │   └── network: taskmanager-network
+│   │   └── networks: taskmanager-network
 │   └── 🎨 Frontend (port 3004)
 │       ├── build: ./frontend
 │       ├── depends_on: backend
-│       └── network: taskmanager-network
+│       └── networks: taskmanager-network
 │
-├── 📄 .gitignore                               # Git ignored files
+├── 📄 .gitignore                                # Git ignored files
 │   ├── node_modules/
 │   ├── .env
 │   ├── dist/
@@ -248,14 +262,6 @@ task-manager-pro/
 │   └── coverage/
 │
 └── 📄 README.md                                 # This documentation
-    ├── Badges
-    ├── Live URLs
-    ├── Features
-    ├── Tech Stack
-    ├── Architecture
-    ├── Quick Start
-    ├── API Docs
-    └── Author
 ```
 
 ---
