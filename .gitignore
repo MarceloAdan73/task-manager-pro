@@ -1,0 +1,37 @@
+# Dependencies
+**/node_modules/
+**/package-lock.json
+
+# Build outputs
+**/dist/
+**/.next/
+**/out/
+**/build/
+
+# Environment files
+**/.env
+**/.env.local
+**/.env.production
+**/.env.development
+**/.env.docker
+**/.env.test
+
+# Database
+**/*.db
+**/*.db-journal
+**/prisma/*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+**/coverage/
+**/.nyc_output/
+
+# Logs
+**/*.log
+**/npm-debug.log*
