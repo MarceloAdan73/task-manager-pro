@@ -44,4 +44,4 @@ USER nodejs
 EXPOSE 3005
 
 # Comando para iniciar la app
-CMD ["node", "dist/server.js"]
+CMD npx prisma migrate deploy && npx prisma db seed && node dist/server.js
