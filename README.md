@@ -285,21 +285,22 @@ task-manager-pro/
 
 ### **Option 1: Try Live Demo (No Installation)**
 Simply visit:
+```
 https://task-manager-pro-psi.vercel.app
-
-text
+```
 Use demo credentials:
+```
 Email: demo@taskmanager.com
 Password: demo123
+```
 
-text
+---
 
 ### **Option 2: Local Development**
 
 #### 📋 **Prerequisites**
 - Node.js 20.x or higher
 - npm 9.x or higher
-- Docker Desktop (optional, for containerized setup)
 - PostgreSQL 15 (optional, if not using Docker)
 
 #### 🛠️ **Setup Instructions**
@@ -311,234 +312,236 @@ cd task-manager-pro
 
 # 2. Backend setup
 cd backend
-cp .env.example .env   # Configure your database connection
+cp .env.example .env
 npm install
 npx prisma migrate dev
 npm run dev
-# Backend will run on http://localhost:3005
+# Backend runs on http://localhost:3005
 
-# 3. Frontend setup (in another terminal)
+# 3. Frontend setup (new terminal)
 cd frontend
 cp .env.local.example .env.local
 npm install
 npm run dev
-# Frontend will run on http://localhost:3004
+# Frontend runs on http://localhost:3004
 
-# 4. Open your browser
+# 4. Open browser
 # http://localhost:3004
-Option 3: Docker Setup (Recommended)
-bash
-# 1. Clone the repository
+```
+
+---
+
+### **Option 3: Docker Setup (Recommended)**
+
+```bash
+# 1. Clone repository
 git clone https://github.com/MarceloAdan73/task-manager-pro.git
 cd task-manager-pro
 
-# 2. Start all services with Docker Compose
+# 2. Start all services
 docker-compose up -d
 
-# 3. Wait for services to initialize (30 seconds)
-
-# 4. Access the application
+# 3. Access application
 # Frontend: http://localhost:3004
 # Backend API: http://localhost:3005/api/health
 
-# 5. View logs (optional)
+# 4. View logs (optional)
 docker-compose logs -f
 
-# 6. Stop all services
+# 5. Stop services
 docker-compose down
-Option 4: Production URLs
-bash
-# Frontend (Vercel)
-https://task-manager-pro-psi.vercel.app
+```
 
-# Backend (Render)
-https://task-manager-backend-le9g.onrender.com
+---
 
-# API Health Check
-https://task-manager-backend-le9g.onrender.com/api/health
+### **Option 4: Production URLs**
 
-# API Login Endpoint
-https://task-manager-backend-le9g.onrender.com/api/auth/login
+```
+🌐 Frontend: https://task-manager-pro-psi.vercel.app
+⚙️ Backend:  https://task-manager-backend-le9g.onrender.com
+🔍 Health:   https://task-manager-backend-le9g.onrender.com/api/health
+🔑 Login:    https://task-manager-backend-le9g.onrender.com/api/auth/login
+📋 Tasks:    https://task-manager-backend-le9g.onrender.com/api/tasks
+```
 
-# API Tasks Endpoint
-https://task-manager-backend-le9g.onrender.com/api/tasks
-🎮 Usage Guide
-Authentication
-Navigate to the login page
+---
 
-Use demo credentials or register a new account
+## 🎮 Usage Guide
 
-JWT token is automatically stored and included in API requests
+### **Authentication**
+1. Navigate to the login page
+2. Use demo credentials or register
+3. JWT token auto-stored in localStorage
 
-Task Management
-Action	How to
-Create Task	Click "Add Task" → Fill form → Submit
-Edit Task	Click on task card → Modify fields → Save
-Complete Task	Click checkbox on task card
-Delete Task	Click trash icon on task card
-Filter Tasks	Use filter tabs (All/Pending/Completed)
-Change Priority	Edit task and select priority level
-UI Features
-Toggle Dark Mode - Click sun/moon icon in header
+### **Task Management**
 
-Responsive Layout - Works on mobile, tablet, desktop
+| Action | How to |
+|--------|--------|
+| **Create Task** | Click "Add Task" → Fill form → Submit |
+| **Edit Task** | Click on task card → Modify → Save |
+| **Complete Task** | Click checkbox on task card |
+| **Delete Task** | Click trash icon on task card |
+| **Filter Tasks** | Use tabs (All/Pending/Completed) |
+| **Change Priority** | Edit task → Select priority |
 
-Real-time Updates - Changes appear immediately with optimistic UI
+### **UI Features**
+- 🌙 **Dark Mode** - Click sun/moon icon in header
+- 📱 **Responsive** - Works on mobile, tablet, desktop
+- ⚡ **Real-time** - Optimistic updates with React Query
 
-🔧 API Documentation
-Base URL
-text
+---
+
+## 🔧 API Documentation
+
+### **Base URL**
+```
 Production: https://task-manager-backend-le9g.onrender.com/api
 Local:      http://localhost:3005/api
-Authentication Endpoints
-Method	Endpoint	Description	Request Body	Response
-POST	/auth/login	User login	{ "email": "string", "password": "string" }	{ "token": "jwt", "user": {...} }
-GET	/auth/verify	Verify token	-	{ "user": {...} }
-Task Endpoints (Requires JWT)
-Method	Endpoint	Description	Request Body	Response
-GET	/tasks	Get all tasks	-	{ "data": [...] }
-GET	/tasks/:id	Get single task	-	{ "data": {...} }
-POST	/tasks	Create task	{ "title": "string", "description?": "string", "priority?": "LOW|MEDIUM|HIGH|URGENT" }	{ "data": {...} }
-PUT	/tasks/:id	Update task	{ "title?": "string", "description?": "string", "completed?": "boolean", "priority?": "..." }	{ "data": {...} }
-DELETE	/tasks/:id	Delete task	-	{ "success": true }
-PATCH	/tasks/:id/toggle	Toggle completion	-	{ "data": {...} }
-Response Format
-json
+```
+
+### **Authentication Endpoints**
+
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| **POST** | `/auth/login` | User login | `{ "email": "string", "password": "string" }` | `{ "token": "jwt", "user": {...} }` |
+| **GET** | `/auth/verify` | Verify token | - | `{ "user": {...} }` |
+
+### **Task Endpoints** (Requires JWT)
+
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| **GET** | `/tasks` | Get all tasks | - | `{ "data": [...] }` |
+| **GET** | `/tasks/:id` | Get single task | - | `{ "data": {...} }` |
+| **POST** | `/tasks` | Create task | `{ "title": "string", "description?": "string", "priority?": "LOW\|MEDIUM\|HIGH\|URGENT" }` | `{ "data": {...} }` |
+| **PUT** | `/tasks/:id` | Update task | `{ "title?": "string", "description?": "string", "completed?": "boolean", "priority?": "..." }` | `{ "data": {...} }` |
+| **DELETE** | `/tasks/:id` | Delete task | - | `{ "success": true }` |
+| **PATCH** | `/tasks/:id/toggle` | Toggle completion | - | `{ "data": {...} }` |
+
+### **Response Format**
+```json
 {
   "success": true,
-  "data": {},           // For single resources
-  "data": [],           // For collections
-  "error": "message"    // For errors
+  "data": {},     // For single resources
+  "data": [],     // For collections
+  "error": "message"
 }
-🐳 Docker Commands
-bash
-# Build and start all services
-docker-compose up -d
+```
 
-# View logs
-docker-compose logs -f
+---
 
-# Stop all services
-docker-compose down
+## 🐳 Docker Commands
 
-# Stop and remove volumes (delete database data)
-docker-compose down -v
+| Command | Description |
+|---------|-------------|
+| `docker-compose up -d` | Start all services |
+| `docker-compose logs -f` | View real-time logs |
+| `docker-compose down` | Stop all services |
+| `docker-compose down -v` | Stop and delete database |
+| `docker-compose build backend` | Rebuild backend only |
+| `docker exec -it taskmanager-backend sh` | Access container shell |
+| `docker ps` | List running containers |
+| `docker stats` | View resource usage |
 
-# Rebuild specific service
-docker-compose build backend
-docker-compose up -d backend
+---
 
-# Execute command in running container
-docker exec -it taskmanager-backend sh
+## 🧪 Testing
 
-# View container status
-docker ps
-
-# View resource usage
-docker stats
-🧪 Testing
-Backend Tests
-bash
+### **Backend Tests**
+```bash
 cd backend
-npm test                 # Run all tests
-npm test:watch          # Watch mode
-npm test:coverage       # Generate coverage report
-Frontend Tests
-bash
+npm test          # Run all tests
+npm test:watch    # Watch mode
+npm test:coverage # Coverage report
+```
+
+### **Frontend Tests**
+```bash
 cd frontend
-npm test                 # Run all tests
-npm test:watch          # Watch mode
-npm test:coverage       # Generate coverage report
-Test Coverage
-text
+npm test          # Run all tests
+npm test:watch    # Watch mode
+npm test:coverage # Coverage report
+```
+
+### **Test Coverage**
+```
 ✅ Backend: 30/30 tests
-   - Auth Controller
-   - Task Controller
-   - Middleware
-   - Utilities
+   • Auth Controller
+   • Task Controller
+   • Middleware
+   • Utilities
 
 ✅ Frontend: 56/56 tests
-   - Components
-   - Hooks
-   - API Client
-   - Contexts
-🚧 Future Improvements
-Short Term
-Dashboard with analytics charts
+   • Components
+   • Hooks
+   • API Client
+   • Contexts
+```
 
-CSV/PDF export functionality
+---
 
-Task categories/tags
+## 🚧 Future Improvements
 
-Due dates and reminders
+| Short Term | Medium Term | Long Term |
+|------------|-------------|-----------|
+| 📊 Dashboard with charts | 👥 Team collaboration | 📱 Mobile app |
+| 📄 CSV/PDF export | 🔄 WebSockets real-time | 🤖 AI task suggestions |
+| 🏷️ Categories/Tags | 📎 File attachments | 📅 Calendar integration |
+| ⏰ Due dates/Reminders | 📧 Email notifications | 🔐 Enterprise SSO |
 
-Medium Term
-Team collaboration features
+---
 
-Real-time updates with WebSockets
+## 🤝 Contributing
 
-File attachments
+1. **Fork** the repository
+2. **Create** feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** changes (`git commit -m 'Add AmazingFeature'`)
+4. **Push** to branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
 
-Email notifications
+### **Development Guidelines**
+- ✅ Write tests for new features
+- ✅ Maintain 100% TypeScript strictness
+- ✅ Follow existing code style
+- ✅ Update documentation
 
-Long Term
-Mobile app with React Native
+---
 
-AI-powered task suggestions
+## 📄 License
 
-Integration with calendar apps
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-Enterprise SSO
+---
 
-🤝 Contributing
-Contributions are welcome! Please follow these steps:
+## 👨‍💻 Author
 
-Fork the repository
+**Marcelo Adán** - Full-Stack Developer
 
-Create a feature branch (git checkout -b feature/AmazingFeature)
+[![GitHub](https://img.shields.io/badge/GitHub-MarceloAdan73-181717?style=for-the-badge&logo=github)](https://github.com/MarceloAdan73)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Marcelo_Adán-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/marcelo-adan)
+[![Portfolio](https://img.shields.io/badge/Portfolio-marcelo.dev-000000?style=for-the-badge&logo=vercel)](https://marcelo.dev)
 
-Commit changes (git commit -m 'Add AmazingFeature')
+> 🧠 **Architectural Note**: This project's codebase is orchestrated by Marcelo Adán, with AI assistance as a development tool to accelerate implementation while maintaining professional standards and senior-level architectural decisions.
 
-Push to branch (git push origin feature/AmazingFeature)
+---
 
-Open a Pull Request
+## 🙏 Acknowledgements
 
-Development Guidelines
-Write tests for new features
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [React Query Documentation](https://tanstack.com/query/latest)
+- [Render Documentation](https://render.com/docs)
+- [Vercel Documentation](https://vercel.com/docs)
 
-Maintain 100% TypeScript strictness
+---
 
-Follow existing code style
+## ⭐ Support
 
-Update documentation as needed
+If you find this project useful, please consider giving it a star on GitHub!
 
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+[![Star on GitHub](https://img.shields.io/github/stars/MarceloAdan73/task-manager-pro?style=social)](https://github.com/MarceloAdan73/task-manager-pro)
 
-👨‍💻 Author
-Marcelo Adán - Full-Stack Developer
+---
 
-https://img.shields.io/badge/GitHub-MarceloAdan73-181717?style=for-the-badge&logo=github
-https://img.shields.io/badge/LinkedIn-Marcelo_Ad%C3%A1n-0A66C2?style=for-the-badge&logo=linkedin
-https://img.shields.io/badge/Portfolio-marcelo.dev-000000?style=for-the-badge&logo=vercel
-
-🧠 Architectural Note: This project's codebase is orchestrated by Marcelo Adán, with AI assistance as a development tool to accelerate implementation while maintaining professional standards and senior-level architectural decisions.
-
-🙏 Acknowledgements
-Next.js Documentation
-
-Prisma Documentation
-
-React Query Documentation
-
-Render Documentation
-
-Vercel Documentation
-
-⭐ Support
-If you find this project useful, please consider giving it a star on GitHub! It helps others discover it.
-
-https://img.shields.io/github/stars/MarceloAdan73/task-manager-pro?style=social
-
-<div align="center"> <sub>Built with ❤️ by Marcelo Adán | © 2026 Task Manager Pro</sub> </div> ```
-Este README es completame
+<div align="center">
+  <sub>Built with ❤️ by Marcelo Adán | © 2026 Task Manager Pro</sub>
+</div>
