@@ -45,8 +45,6 @@
 |----------------|-------------|
 | ![Create Task](https://via.placeholder.com/400x250?text=Create+Task) | ![Mobile](https://via.placeholder.com/400x250?text=Mobile+View) |
 
-> **Note:** Replace placeholder images with actual screenshots from your application
-
 ---
 
 ## ✨ Key Features
