@@ -31,7 +31,7 @@
 **Task Manager Pro** is a professional full-stack task management application built with modern technologies and best practices. It features secure JWT authentication, real-time optimistic updates, and a responsive dark-themed UI. The application is fully containerized with Docker and deployed to production with CI/CD pipelines.
 
 > 🧠 **Architected by Marcelo Adán**  
-> *Código orquestado por Marcelo Adán con apoyo de IA como herramienta de desarrollo, manteniendo estándares profesionales y decisiones arquitectónicas propias de un Senior Full-Stack.*
+> "Code orchestrated by me with AI support as a development tool, maintaining professional standards and architectural decisions typical of a Full-Stack developer."
 
 ---
 
