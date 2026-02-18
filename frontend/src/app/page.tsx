@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import TaskList from "@/components/TaskList/TaskList";
 import TaskForm from "@/components/TaskForm/TaskForm";
 import TaskEditModal from "@/components/TaskEditModal/TaskEditModal";
@@ -30,12 +31,13 @@ import {
   Cpu,
   ArrowUpRight,
   ShieldCheck,
-  LayoutGrid
-} from 'lucide-react';
+  LayoutGrid,
+} from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading, user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const {
     tasks,
@@ -51,6 +53,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "completed" | "pending">(
     "all",
   );
@@ -218,11 +221,49 @@ export default function Home() {
             <button
               type="button"
               aria-label="Open menu"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 bg-white dark:bg-zinc-900 border rounded-lg"
             >
               <Menu className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden absolute top-20 right-6 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg py-2 z-50">
+              <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
+                <p className="text-sm font-medium text-zinc-900 dark:text-white">
+                  {user?.name || "Usuario"}
+                </p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                  {user?.email}
+                </p>
+              </div>
+
+              <div className="p-2">
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    toggleTheme?.();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                >
+                  {theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode"}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors mt-1"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Top Bar */}
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
