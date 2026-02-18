@@ -20,9 +20,9 @@
 
 | Environment | URL | Status |
 |-------------|-----|--------|
-| **Frontend (Vercel)** | <a href="https://task-manager-pro-psi.vercel.app" target="_blank">https://task-manager-pro-psi.vercel.app</a> | ![Vercel](https://img.shields.io/badge/Ready-00FF00?style=flat-square) |
-| **Backend (Render)** | <a href="https://task-manager-backend-le9g.onrender.com" target="_blank">https://task-manager-backend-le9g.onrender.com</a> | ![Render](https://img.shields.io/badge/Ready-00FF00?style=flat-square) |
-| **Health Check** | <a href="https://task-manager-backend-le9g.onrender.com/api/health" target="_blank">https://task-manager-backend-le9g.onrender.com/api/health</a> | ![Database](https://img.shields.io/badge/PostgreSQL-Connected-4169E1?style=flat-square) |
+| **Frontend (Vercel)** | [https://task-manager-pro-psi.vercel.app](https://task-manager-pro-psi.vercel.app "🔗 Abrir en nueva pestaña"){:target="_blank"} | ![Vercel](https://img.shields.io/badge/Ready-00FF00?style=flat-square) |
+| **Backend (Render)** | [https://task-manager-backend-le9g.onrender.com](https://task-manager-backend-le9g.onrender.com "⚙️ Abrir en nueva pestaña"){:target="_blank"} | ![Render](https://img.shields.io/badge/Ready-00FF00?style=flat-square) |
+| **Health Check** | [https://task-manager-backend-le9g.onrender.com/api/health](https://task-manager-backend-le9g.onrender.com/api/health "🩺 Abrir en nueva pestaña"){:target="_blank"} | ![Database](https://img.shields.io/badge/PostgreSQL-Connected-4169E1?style=flat-square) |
 
 ---
 
