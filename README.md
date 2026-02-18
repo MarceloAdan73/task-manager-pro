@@ -20,10 +20,13 @@
 
 <div align="center">
 
-[![Vercel](https://img.shields.io/badge/🚀_Frontend-Vercel-000000?style=for-the-badge&logo=vercel)](https://task-manager-pro-psi.vercel.app)
-[![Render](https://img.shields.io/badge/⚙️_Backend-Render-46E3B7?style=for-the-badge&logo=render)](https://task-manager-backend-le9g.onrender.com)
-[![PostgreSQL](https://img.shields.io/badge/🩺_Health-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql)](https://task-manager-backend-le9g.onrender.com/api/health)
+| Environment | 🔗 URL | 📊 Status |
+|:-----------:|:-------|:---------:|
+| **🎨 Frontend** <br/> (Vercel) | [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://task-manager-pro-psi.vercel.app) | ![Active](https://img.shields.io/badge/🟢_Active-00FF00?style=for-the-badge) |
+| **⚙️ Backend API** <br/> (Render) | [![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)](https://task-manager-backend-le9g.onrender.com) | ![Active](https://img.shields.io/badge/🟢_Active-00FF00?style=for-the-badge) |
+| **🩺 Health Check** <br/> (PostgreSQL) | [![Database](https://img.shields.io/badge/PostgreSQL-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://task-manager-backend-le9g.onrender.com/api/health) | ![Connected](https://img.shields.io/badge/✅_Connected-4169E1?style=for-the-badge) |
 
+</div>
 ---
 
 ## 📖 Overview
