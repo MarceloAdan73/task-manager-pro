@@ -146,8 +146,9 @@
 <details>
 <summary><b>📂 Click to expand full project structure</b></summary>
 
-```bash
+```
 task-manager-pro/
+│
 ├── 📁 frontend/                               # Next.js 16 + TypeScript
 │   ├── 📁 src/
 │   │   ├── 📁 app/                            # App Router
@@ -176,7 +177,7 @@ task-manager-pro/
 │   │   │
 │   │   └── 📁 __tests__/                        # Frontend tests (56)
 │   │
-│   └── 📄 Config Files                         # Root configs
+│   └── 📁 config/                               # Configuration files
 │       ├── 📄 Dockerfile
 │       ├── 📄 vercel.json
 │       ├── 📄 next.config.js
@@ -222,19 +223,17 @@ task-manager-pro/
 │   │   ├── 📁 unit/
 │   │   └── 📁 setup/
 │   │
-│   └── 📄 Config Files
+│   └── 📁 config/                               # Configuration files
 │       ├── 📄 Dockerfile
 │       ├── 📄 render.yaml
 │       ├── 📄 jest.config.js
 │       ├── 📄 tsconfig.json
 │       └── 📄 package.json
 │
-├── 📄 docker-compose.yml                        # Local stack
-│   ├── 🗄️ PostgreSQL (port 5433)
-│   ├── ⚙️ Backend API (port 3005)
-│   └── 🎨 Frontend (port 3004)
+├── 📄 docker-compose.yml                        # Local development stack
 │
 ├── 📄 .gitignore                                # Git ignored files
+│
 └── 📄 README.md                                 # This documentation
 ```
 </details>
