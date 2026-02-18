@@ -1,4 +1,3 @@
-
 # 🚀 Task Manager Pro - Full-Stack Application
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.3-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -17,8 +16,6 @@
 ---
 
 ## 🌐 Live Application
-
-<div align="center">
 
 | Environment | 🔗 URL | 📊 Status |
 |:-----------:|:-------|:---------:|
