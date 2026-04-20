@@ -8,6 +8,7 @@ import TaskList from "@/components/TaskList/TaskList";
 import TaskForm from "@/components/TaskForm/TaskForm";
 import TaskEditModal from "@/components/TaskEditModal/TaskEditModal";
 import { DarkModeToggle } from "@/components/DarkModeToggle/DarkModeToggle";
+import ExportButton from "@/components/ExportButton";
 import { useTasks } from "@/hooks/useTasks";
 import type { TaskFormData, Task } from "@/lib/types";
 import {
@@ -336,7 +337,10 @@ export default function Home() {
                     <Layers className="w-4 h-4 text-zinc-400" />
                     Task Overview
                   </h2>
-                  <span className="text-xs text-zinc-500">Live Updates</span>
+                  <div className="flex items-center gap-3">
+                    <ExportButton />
+                    <span className="text-xs text-zinc-500">Live Updates</span>
+                  </div>
                 </div>
 
                 <div className="flex-1">

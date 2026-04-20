@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import taskRoutes from './routes/task.routes';
 import authRoutes from './routes/auth.routes';
+import exportRoutes from './routes/export.routes';
 
 // ========== IMPORT ENHANCED SECURITY CONFIGURATIONS ==========
 import { corsOptions } from './config/cors';
@@ -68,6 +69,9 @@ app.use('/api/auth', authRateLimiter, authRoutes); // ✅ ENHANCED
 
 // Task routes (protected by JWT middleware)
 app.use('/api/tasks', taskRoutes);
+
+// Export routes (protected by JWT middleware)
+app.use('/api/export', exportRoutes);
 
 // ========== ENHANCED ROOT ROUTE ==========
 app.get('/', (req: Request, res: Response) => {

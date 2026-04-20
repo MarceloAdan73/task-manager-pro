@@ -14,8 +14,8 @@
     "prisma:studio": "prisma studio",
     "prisma:db-push": "prisma db push",
     "prisma": {
-     "seed": "node prisma/seed.js"
- }
+      "seed": "node prisma/seed.js"
+    }
   },
   "dependencies": {
     "@prisma/client": "6.19.2",
@@ -24,7 +24,9 @@
     "express": "^4.22.1",
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.3",
+    "pdfkit": "^0.18.0",
     "pg": "^8.18.0",
     "prisma": "6.19.2",
     "zod": "^4.3.6"
@@ -34,8 +36,10 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
+    "@types/json2csv": "^5.0.7",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.2.1",
+    "@types/pdfkit": "^0.17.6",
     "@types/supertest": "^6.0.3",
     "dotenv": "^17.2.4",
     "jest": "^30.2.0",
