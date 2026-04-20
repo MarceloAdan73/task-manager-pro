@@ -1,5 +1,7 @@
 # 🚀 Task Manager Pro - Full-Stack Application
 
+[![CI](https://github.com/MarceloAdan73/task-manager-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/MarceloAdan73/task-manager-pro/actions/workflows/ci.yml)
+
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.3-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React Query](https://img.shields.io/badge/React_Query-5.90-FF4154?style=for-the-badge&logo=react-query&logoColor=white)](https://tanstack.com/query/latest)
