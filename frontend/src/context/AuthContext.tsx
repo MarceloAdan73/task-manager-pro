@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/lib/supabase';
 
 interface User {
   id: string;
@@ -36,25 +37,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005/api';
-    
-    const response = await fetch(`${API_URL}/auth/login`, {  // ✅ CORREGIDO
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || 'Login failed');
+    if (error || !userData) {
+      throw new Error('Invalid credentials');
     }
 
-    const data = await response.json();
-    
-    setToken(data.token);
-    setUser(data.user);
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
+    if (userData.password !== password) {
+      throw new Error('Invalid credentials');
+    }
+
+    const user: User = {
+      id: userData.id,
+      email: userData.email,
+      name: userData.name
+    };
+
+    setToken('authenticated');
+    setUser(user);
+    localStorage.setItem('token', 'authenticated');
+    localStorage.setItem('userId', userData.id);
+    localStorage.setItem('user', JSON.stringify(user));
   };
 
   const logout = () => {
@@ -62,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('userId');
   };
 
   return (

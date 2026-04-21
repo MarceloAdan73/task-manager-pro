@@ -19,7 +19,7 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH'>('MEDIUM');
+  const [priority, setPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'>('MEDIUM');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -104,11 +104,14 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
             </label>
             <select
               value={priority}
-              onChange={(e) => setPriority(e.target.value as 'LOW' | 'MEDIUM' | 'HIGH')}
+              onChange={(e) => setPriority(e.target.value as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100"
               disabled={isSaving}
               aria-label="Task priority"
             >
+              <option value="URGENT" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                Urgent
+              </option>
               <option value="HIGH" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                 High
               </option>
