@@ -7,6 +7,7 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://task-manager-backend.onrender.com/api"
+    "NEXT_PUBLIC_SUPABASE_URL": "https://vkgumzrkdnlebywbeyyi.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_c6lG_jdvTPWHNfttJX26Gw_1AjTV_p9"
   }
 }

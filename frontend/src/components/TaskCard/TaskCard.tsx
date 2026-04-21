@@ -40,6 +40,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const [copied, setCopied] = useState(false);
 
   const priorityConfig = {
+    URGENT: {
+      color: 'text-purple-600 dark:text-purple-400',
+      bg: 'bg-purple-50 dark:bg-purple-900/20',
+      border: 'border-purple-200 dark:border-purple-800/50',
+      accent: 'from-purple-500 to-purple-600',
+      badgeBg: 'bg-purple-500/10',
+      badgeText: 'text-purple-600 dark:text-purple-400'
+    },
     HIGH: {
       color: 'text-red-600 dark:text-red-400',
       bg: 'bg-red-50 dark:bg-red-900/20',
