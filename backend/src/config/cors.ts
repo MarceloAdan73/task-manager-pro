@@ -22,6 +22,7 @@ export const corsOptions: CorsOptions = {
         envConfig.FRONTEND_URL,
         'http://localhost:3004',
         'http://127.0.0.1:3004',
+        'https://task-manager-pro-psi.vercel.app',
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {

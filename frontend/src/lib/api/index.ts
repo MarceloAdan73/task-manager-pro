@@ -1,140 +1,78 @@
-// TYPESCRIPT BACKEND CONNECTION - Task Manager Pro
-// Connects to real backend using environment variables
+import { supabase } from "../supabase";
 import { Task, CreateTaskDTO, UpdateTaskDTO } from "../types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005/api';
 const STORAGE_KEY = 'task_manager_tasks_v1';
 
-// Get token from localStorage
-const getAuthToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('token');
-};
-
-// Parse dates from backend response
 const parseDates = (task: any): Task => ({
   ...task,
-  createdAt: new Date(task.createdAt),
-  updatedAt: new Date(task.updatedAt)
+  createdAt: new Date(task.created_at || task.createdAt),
+  updatedAt: new Date(task.updated_at || task.updatedAt)
 });
 
-// Helper for fetch with error handling + JWT
-async function fetchWithError<T>(url: string, options?: RequestInit): Promise<T> {
-  const token = getAuthToken();
-
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-      ...options?.headers,
-    },
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-
-    if (response.status === 401) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-      }
-    }
-
-    throw new Error(
-      errorData.error?.message ||
-      errorData.message ||
-      `HTTP error ${response.status}`
-    );
-  }
-
-  const data = await response.json();
-
-  if (data.success && data.data !== undefined) {
-    return data.data;
-  }
-
-  return data;
-}
-
-// Read tasks from localStorage
 const getTasksFromStorage = (): Task[] => {
   if (typeof window === 'undefined') return [];
   const stored = localStorage.getItem(STORAGE_KEY);
   return stored ? JSON.parse(stored) : [];
 };
 
-// Save tasks to localStorage
 const saveTasksToStorage = (tasks: Task[]) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 };
 
-// Get default fallback tasks
-const getDefaultTasks = (): Task[] => [
-  {
-    id: 'default-1',
-    title: '⚠️ Backend unavailable - Using sample data',
-    description: 'Connect the backend to manage your tasks',
-    priority: 'MEDIUM',
-    completed: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }
-];
-
-// Fetch all tasks FROM BACKEND with localStorage fallback
 export const fetchTasks = async (): Promise<Task[]> => {
   try {
-    console.log('[API] Connecting to backend at:', API_BASE_URL);
-    const tasks = await fetchWithError<Task[]>(`${API_BASE_URL}/tasks`);
-    console.log(`[API] ${tasks.length} tasks received`);
-    
-    // Save to localStorage as backup
-    saveTasksToStorage(tasks);
-    
-    return tasks.map(parseDates);
-  } catch (error) {
-    console.error('[API] Error connecting to backend, using localStorage:', error);
-    
-    // Try to get from localStorage
-    const storedTasks = getTasksFromStorage();
-    if (storedTasks.length > 0) {
-      return storedTasks.map(parseDates);
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      const stored = getTasksFromStorage();
+      if (stored.length > 0) return stored;
+      return [];
     }
-    
-    // If no localStorage, use default tasks
-    return getDefaultTasks();
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const tasks = (data || []).map(parseDates);
+    saveTasksToStorage(tasks);
+    return tasks;
+  } catch (error) {
+    console.error('[API] Error fetching tasks:', error);
+    const stored = getTasksFromStorage();
+    if (stored.length > 0) return stored;
+    return [];
   }
 };
 
-// Create new task IN BACKEND with localStorage fallback
 export const createTask = async (data: CreateTaskDTO): Promise<Task> => {
   try {
-    console.log('[API] Sending task to backend...');
+    const userId = localStorage.getItem('userId');
+    if (!userId) throw new Error('Not authenticated');
 
-    const taskData = {
-      ...data,
-      priority: data.priority.toUpperCase() as 'HIGH' | 'MEDIUM' | 'LOW'
-    };
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .insert({
+        title: data.title,
+        description: data.description,
+        priority: data.priority || 'MEDIUM',
+        completed: false,
+        user_id: userId
+      })
+      .select()
+      .single();
 
-    const task = await fetchWithError<Task>(`${API_BASE_URL}/tasks`, {
-      method: 'POST',
-      body: JSON.stringify(taskData)
-    });
+    if (error) throw error;
 
-    console.log(`[API] Task created: "${task.title}"`);
-    
-    // Update localStorage
+    const newTask = parseDates(task);
     const tasks = getTasksFromStorage();
-    saveTasksToStorage([...tasks, task]);
-    
-    return parseDates(task);
+    saveTasksToStorage([...tasks, newTask]);
+    return newTask;
   } catch (error) {
-    console.error('[API] Error creating task, saving to localStorage:', error);
-    
-    // Create task in localStorage
+    console.error('[API] Error creating task:', error);
     const newTask: Task = {
       id: `local-${Date.now()}`,
       ...data,
@@ -142,47 +80,39 @@ export const createTask = async (data: CreateTaskDTO): Promise<Task> => {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    
     const tasks = getTasksFromStorage();
     saveTasksToStorage([...tasks, newTask]);
-    
     return newTask;
   }
 };
 
-// Update task IN BACKEND with localStorage fallback
-export const updateTask = async (
-  id: string,
-  updates: UpdateTaskDTO
-): Promise<Task> => {
+export const updateTask = async (id: string, updates: UpdateTaskDTO): Promise<Task> => {
   try {
-    console.log(`[API] Updating task ${id}...`);
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .update({
+        title: updates.title,
+        description: updates.description,
+        priority: updates.priority,
+        completed: updates.completed,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
 
-    const updateData = { ...updates };
-    if (updateData.priority) {
-      updateData.priority = updateData.priority.toUpperCase() as 'HIGH' | 'MEDIUM' | 'LOW';
-    }
+    if (error) throw error;
 
-    const task = await fetchWithError<Task>(`${API_BASE_URL}/tasks/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updateData)
-    });
-
-    console.log(`[API] Task updated: "${task.title}"`);
-    
-    // Update localStorage
+    const updatedTask = parseDates(task);
     const tasks = getTasksFromStorage();
     const index = tasks.findIndex(t => t.id === id);
     if (index !== -1) {
-      tasks[index] = task;
+      tasks[index] = updatedTask;
       saveTasksToStorage(tasks);
     }
-    
-    return parseDates(task);
+    return updatedTask;
   } catch (error) {
-    console.error('[API] Error updating task, updating localStorage:', error);
-    
-    // Update in localStorage
+    console.error('[API] Error updating task:', error);
     const tasks = getTasksFromStorage();
     const index = tasks.findIndex(t => t.id === id);
     if (index !== -1) {
@@ -190,66 +120,92 @@ export const updateTask = async (
       saveTasksToStorage(tasks);
       return tasks[index];
     }
-    
-    throw new Error('Task not found in localStorage');
+    throw new Error('Task not found');
   }
 };
 
-// Delete task IN BACKEND with localStorage fallback
 export const deleteTask = async (id: string): Promise<void> => {
   try {
-    console.log(`[API] Deleting task ${id}...`);
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', id);
 
-    await fetchWithError(`${API_BASE_URL}/tasks/${id}`, {
-      method: 'DELETE'
-    });
+    if (error) throw error;
 
-    console.log(`[API] Task ${id} deleted`);
-    
-    // Delete from localStorage
     const tasks = getTasksFromStorage();
     saveTasksToStorage(tasks.filter(t => t.id !== id));
   } catch (error) {
-    console.error('[API] Error deleting task, removing from localStorage:', error);
-    
-    // Delete from localStorage
+    console.error('[API] Error deleting task:', error);
     const tasks = getTasksFromStorage();
     saveTasksToStorage(tasks.filter(t => t.id !== id));
   }
 };
 
-// Toggle task completion IN BACKEND
 export const toggleTaskCompletion = async (id: string): Promise<Task> => {
-  try {
-    console.log(`[API] Toggling completion for task ${id}...`);
+  const tasks = getTasksFromStorage();
+  const task = tasks.find(t => t.id === id);
+  if (!task) throw new Error('Task not found');
 
-    const task = await fetchWithError<Task>(`${API_BASE_URL}/tasks/${id}/toggle`, {
-      method: 'PATCH'
-    });
-
-    console.log(`[API] Task ${id} ${task.completed ? 'completed' : 'incomplete'}`);
-    
-    // Update localStorage
-    const tasks = getTasksFromStorage();
-    const index = tasks.findIndex(t => t.id === id);
-    if (index !== -1) {
-      tasks[index] = task;
-      saveTasksToStorage(tasks);
-    }
-    
-    return parseDates(task);
-  } catch (error) {
-    console.error('[API] Error toggling completion:', error);
-    throw error;
-  }
+  return updateTask(id, { completed: !task.completed });
 };
 
-// Verify backend connection
 export const checkBackendConnection = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
-    return response.ok;
-  } catch (error) {
+    const { error } = await supabase.from('tasks').select('id').limit(1);
+    return !error;
+  } catch {
     return false;
   }
+};
+
+export const login = async (email: string, password: string) => {
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (error || !user) {
+    throw new Error('Invalid credentials');
+  }
+
+  if (user.password !== password) {
+    throw new Error('Invalid credentials');
+  }
+
+  localStorage.setItem('userId', user.id);
+  localStorage.setItem('user', JSON.stringify(user));
+
+  return user;
+};
+
+export const register = async (email: string, password: string, name?: string) => {
+  const { data: existing } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .single();
+
+  if (existing) {
+    throw new Error('Email already exists');
+  }
+
+  const { data: user, error } = await supabase
+    .from('users')
+    .insert({ email, password, name })
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  localStorage.setItem('userId', user.id);
+  localStorage.setItem('user', JSON.stringify(user));
+
+  return user;
+};
+
+export const logout = () => {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('user');
 };
