@@ -1,6 +1,7 @@
 import { supabase } from "../supabase";
 import { Task, CreateTaskDTO, UpdateTaskDTO } from "../types";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 const STORAGE_KEY = 'task_manager_tasks_v1';
 
 const parseDates = (task: any): Task => ({

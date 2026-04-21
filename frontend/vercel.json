@@ -6,8 +6,10 @@
       "use": "@vercel/next"
     }
   ],
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "https://vkgumzrkdnlebywbeyyi.supabase.co",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_c6lG_jdvTPWHNfttJX26Gw_1AjTV_p9"
-  }
+"env": {
+    "NEXT_PUBLIC_API_URL": "/api",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://mvcshaltunbwsnfgdojb.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_k3wjFrupWCAO_ykTRkNECQ_VEcEzSIE"
+  },
+  "regions": ["iad1"]
 }
