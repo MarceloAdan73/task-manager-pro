@@ -21,7 +21,7 @@ export function useTasks() {
   } = useQuery({
     queryKey: ['tasks'],
     queryFn: fetchTasks,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - reduce re-fetching
   });
 
   // Create task mutation with optimistic update
