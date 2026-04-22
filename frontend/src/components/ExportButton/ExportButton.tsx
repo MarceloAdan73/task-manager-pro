@@ -38,6 +38,7 @@ export default function ExportButton() {
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
       console.error('[CSV Export] Error:', error);
+      alert('Error exportando CSV: ' + (error as Error).message);
     } finally {
       setTimeout(() => setIsExporting(false), 500);
     }
@@ -73,6 +74,7 @@ export default function ExportButton() {
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
       console.error('[PDF Export] Error:', error);
+      alert('Error exportando PDF: ' + (error as Error).message);
     } finally {
       setTimeout(() => setIsExporting(false), 500);
     }
