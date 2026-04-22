@@ -12,11 +12,11 @@ export default function ExportButton() {
     if (!token || !user) return;
     setIsExporting(true);
     try {
-      const url = token === 'authenticated' && user?.id
+      const endpointUrl = token === 'authenticated' && user?.id
         ? `/api/export/csv?userId=${user.id}`
         : '/api/export/csv';
       
-      const response = await fetch(url, {
+      const response = await fetch(endpointUrl, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -26,13 +26,13 @@ export default function ExportButton() {
       if (!response.ok) throw new Error('Export failed');
 
       const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = downloadUrl;
       a.download = `tasks-${new Date().toISOString().split('T')[0]}.csv`;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(downloadUrl);
       document.body.removeChild(a);
       setExportSuccess('CSV');
       setTimeout(() => setExportSuccess(null), 2000);
@@ -47,11 +47,11 @@ export default function ExportButton() {
     if (!token || !user) return;
     setIsExporting(true);
     try {
-      const url = token === 'authenticated' && user?.id
+      const endpointUrl = token === 'authenticated' && user?.id
         ? `/api/export/pdf?userId=${user.id}`
         : '/api/export/pdf';
       
-      const response = await fetch(url, {
+      const response = await fetch(endpointUrl, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -61,13 +61,13 @@ export default function ExportButton() {
       if (!response.ok) throw new Error('Export failed');
 
       const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = downloadUrl;
       a.download = `tasks_report_${new Date().toISOString().split('T')[0]}.pdf`;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(downloadUrl);
       document.body.removeChild(a);
       setExportSuccess('PDF');
       setTimeout(() => setExportSuccess(null), 2000);
