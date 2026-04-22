@@ -13,6 +13,8 @@
   "dependencies": {
     "@apollo/server": "^5.5.0",
     "@as-integrations/next": "^4.1.0",
+    "@graphiql/react": "^0.37.3",
+    "@graphiql/toolkit": "^0.11.3",
     "@graphql-tools/schema": "^10.0.32",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.0",
