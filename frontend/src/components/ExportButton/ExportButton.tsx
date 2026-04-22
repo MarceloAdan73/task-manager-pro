@@ -45,16 +45,11 @@ export default function ExportButton() {
   const exportToPDF = async () => {
     setIsExporting(true);
     try {
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) {
-        return;
-      }
-
-      const html = `
+      const printContent = `
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Tasks Export - ${new Date().toLocaleDateString()}</title>
+          <title>Tasks - ${new Date().toLocaleDateString()}</title>
           <style>
             body { font-family: Arial, sans-serif; padding: 20px; }
             h1 { color: #333; margin-bottom: 20px; }
@@ -63,7 +58,7 @@ export default function ExportButton() {
             th { background: #333; color: white; }
             .completed { color: green; }
             .pending { color: orange; }
-            .high { color: red; }
+            @media print { body { -webkit-print-color-adjust: exact; } }
           </style>
         </head>
         <body>
@@ -83,7 +78,7 @@ export default function ExportButton() {
                 <tr>
                   <td>${task.title || ''}</td>
                   <td>${task.description || ''}</td>
-                  <td class="${(task.priority || '').toLowerCase()}">${task.priority || 'MEDIUM'}</td>
+                  <td>${task.priority || 'MEDIUM'}</td>
                   <td class="${task.completed ? 'completed' : 'pending'}">${task.completed ? 'Completed' : 'Pending'}</td>
                   <td>${task.createdAt ? new Date(task.createdAt).toLocaleDateString() : ''}</td>
                 </tr>
@@ -94,11 +89,15 @@ export default function ExportButton() {
         </html>
       `;
 
-      printWindow.document.write(html);
-      printWindow.document.close();
-      printWindow.onload = () => {
-        printWindow.print();
-      };
+      const blob = new Blob([printContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, '_blank');
+      
+      if (win) {
+        win.onload = () => {
+          win.print();
+        };
+      }
       setExportSuccess('PDF');
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
