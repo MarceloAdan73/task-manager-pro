@@ -338,7 +338,7 @@ export default function Home() {
                     Task Overview
                   </h2>
 <div className="flex items-center gap-3">
-                      <ExportButton taskCount={tasks.length} />
+                      <ExportButton />
                       <span className="text-xs text-zinc-500">Live Updates</span>
                     </div>
                 </div>
