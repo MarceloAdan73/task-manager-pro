@@ -53,9 +53,7 @@ describe('TaskEditModal', () => {
     expect(screen.getByText('High')).toBeInTheDocument();
     expect(screen.getByText('Medium')).toBeInTheDocument();
     expect(screen.getByText('Low')).toBeInTheDocument();
-    
-    // Verify there are no other priority options
-    expect(screen.queryByText('Urgent')).not.toBeInTheDocument();
+    expect(screen.getByText('Urgent')).toBeInTheDocument();
     
     // Buttons
     expect(screen.getByText('Cancel')).toBeInTheDocument();
