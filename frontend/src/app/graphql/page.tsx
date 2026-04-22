@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Play, Copy, Check, Loader2 } from 'lucide-react';
+import { Play, Copy, Check, Loader2, ArrowLeft } from 'lucide-react';
 
 const defaultQuery = `query GetTasks {
   tasks(userId: "user-id") {
@@ -15,6 +16,7 @@ const defaultQuery = `query GetTasks {
 }`;
 
 export default function GraphiQLPage() {
+  const router = useRouter();
   const { user } = useAuth();
   const [query, setQuery] = useState(defaultQuery);
   const [variables, setVariables] = useState('{\n  "userId": "user-id"\n}');
@@ -70,6 +72,12 @@ export default function GraphiQLPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-black p-4 lg:p-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
+          <button
+            onClick={() => router.push('/')}
+            className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
           <span>GraphQL API</span>
           <code className="text-xs bg-zinc-200 dark:bg-zinc-800 px-2 py-1 rounded font-mono text-zinc-600 dark:text-zinc-400">
             POST /api/graphql
