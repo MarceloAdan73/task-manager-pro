@@ -2,96 +2,127 @@
 
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
-
-const getAuthToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('token');
-};
+import { useTasks } from '@/hooks/useTasks';
 
 export default function ExportButton() {
+  const { tasks } = useTasks();
   const [isExporting, setIsExporting] = useState(false);
 
-  const exportToCSV = async () => {
+  const convertToCSV = (data: typeof tasks): string => {
+    if (!data.length) return '';
+
+    const headers = ['ID', 'Title', 'Description', 'Priority', 'Completed', 'Created At', 'Updated At'];
+    const rows = data.map(task => [
+      task.id,
+      `"${(task.title || '').replace(/"/g, '""')}"`,
+      `"${(task.description || '').replace(/"/g, '""')}"`,
+      task.priority || 'MEDIUM',
+      task.completed ? 'Yes' : 'No',
+      task.createdAt ? new Date(task.createdAt).toISOString() : '',
+      task.updatedAt ? new Date(task.updatedAt).toISOString() : '',
+    ]);
+
+    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  };
+
+  const exportToCSV = () => {
     setIsExporting(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005/api';
-      const token = getAuthToken();
-      
-      console.log('[CSV Export] Token exists:', !!token);
-      console.log('[CSV Export] API URL:', API_URL);
-      
-      if (!token) {
-        alert('Please log in first');
-        setIsExporting(false);
-        return;
-      }
-      
-      const response = await fetch(`${API_URL}/export/csv`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      console.log('[CSV Export] Status:', response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[CSV Export] Error:', errorText);
-        alert('Export failed. Check console for details.');
-        setIsExporting(false);
-        return;
-      }
-
-      const blob = await response.blob();
-      console.log('[CSV Export] Blob size:', blob.size);
-      saveAs(blob, 'tasks.csv');
+      const csv = convertToCSV(tasks);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      saveAs(blob, `tasks-${new Date().toISOString().split('T')[0]}.csv`);
     } catch (error) {
       console.error('[CSV Export] Error:', error);
+      alert('Export failed. Check console for details.');
     } finally {
       setIsExporting(false);
     }
   };
 
-  const exportToPDF = async () => {
+  const exportToPDF = () => {
     setIsExporting(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005/api';
-      const token = getAuthToken();
-      
-      console.log('[PDF Export] Token exists:', !!token);
-      console.log('[PDF Export] API URL:', API_URL);
-      
-      if (!token) {
-        alert('Please log in first');
-        setIsExporting(false);
-        return;
-      }
-      
-      const response = await fetch(`${API_URL}/export/pdf`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      console.log('[PDF Export] Status:', response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[PDF Export] Error:', errorText);
-        alert('Export failed. Check console for details.');
-        setIsExporting(false);
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow popups to export PDF');
         return;
       }
 
-      const blob = await response.blob();
-      console.log('[PDF Export] Blob size:', blob.size);
-      saveAs(blob, 'tasks.pdf');
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Tasks Export - ${new Date().toLocaleDateString()}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background: #333; color: white; }
+            .completed { color: green; }
+            .pending { color: orange; }
+            .high { color: red; }
+          </style>
+        </head>
+        <body>
+          <h1>Tasks - ${new Date().toLocaleDateString()}</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tasks.map(task => `
+                <tr>
+                  <td>${task.title || ''}</td>
+                  <td>${task.description || ''}</td>
+                  <td class="${(task.priority || '').toLowerCase()}">${task.priority || 'MEDIUM'}</td>
+                  <td class="${task.completed ? 'completed' : 'pending'}">${task.completed ? 'Completed' : 'Pending'}</td>
+                  <td>${task.createdAt ? new Date(task.createdAt).toLocaleDateString() : ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.onload = () => {
+        printWindow.print();
+      };
     } catch (error) {
       console.error('[PDF Export] Error:', error);
+      alert('Export failed. Check console for details.');
     } finally {
       setIsExporting(false);
     }
   };
+
+  if (!tasks.length) {
+    return (
+      <div className="flex gap-2">
+        <button
+          disabled
+          className="px-3 py-1.5 bg-gray-400 text-white text-sm rounded cursor-not-allowed"
+        >
+          CSV
+        </button>
+        <button
+          disabled
+          className="px-3 py-1.5 bg-gray-400 text-white text-sm rounded cursor-not-allowed"
+        >
+          PDF
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-2">
