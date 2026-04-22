@@ -251,6 +251,17 @@ export default function Home() {
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
+                    router.push('/graphql');
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                >
+                  <Code2 className="w-4 h-4" />
+                  GraphQL API
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
                     toggleTheme?.();
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
