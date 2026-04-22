@@ -3,7 +3,7 @@ import { z } from 'zod';
 // Environment variables validation schema
 const envSchema = z.object({
   // Database
-  DATABASE_URL: z.string().url().min(1, "DATABASE_URL is required"),
+  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   
   // JWT
   JWT_SECRET: z.string().min(32, "JWT_SECRET must be at least 32 characters"),
@@ -14,7 +14,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   
   // CORS
-  FRONTEND_URL: z.string().url().default("http://localhost:3004"),
+  FRONTEND_URL: z.string().min(1, "FRONTEND_URL is required"),
   
   // Rate limiting
   RATE_LIMIT_WINDOW_MS: z.string().default("900000").transform((val) => parseInt(val, 10)), // 15 minutes

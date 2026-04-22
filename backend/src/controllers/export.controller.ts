@@ -3,6 +3,17 @@ import { prisma } from '../database/prisma';
 import { Parser } from 'json2csv';
 import PDFDocument from 'pdfkit';
 
+interface TaskType {
+  id: string;
+  title: string;
+  description: string | null;
+  completed: boolean;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  dueDate: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export const exportToCSV = async (req: Request, res: Response): Promise<void> => {
   console.log('GET /api/export/csv - EXPORTING TO CSV');
 
@@ -24,7 +35,7 @@ export const exportToCSV = async (req: Request, res: Response): Promise<void> =>
       orderBy: { createdAt: 'desc' }
     });
 
-    const csvTasks = tasks.map(task => ({
+    const csvTasks = tasks.map((task: TaskType) => ({
       id: task.id,
       title: task.title,
       description: task.description || '',
@@ -73,10 +84,10 @@ export const exportToPDF = async (req: Request, res: Response): Promise<void> =>
       orderBy: { createdAt: 'desc' }
     });
 
-    const completedTasks = tasks.filter(t => t.completed);
-    const pendingTasks = tasks.filter(t => !t.completed);
-    const highPriority = tasks.filter(t => t.priority === 'HIGH' || t.priority === 'URGENT');
-    const overdueTasks = tasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && !t.completed);
+const completedTasks = tasks.filter((t: TaskType) => t.completed);
+const pendingTasks = tasks.filter((t: TaskType) => !t.completed);
+const highPriority = tasks.filter((t: TaskType) => t.priority === 'HIGH' || t.priority === 'URGENT');
+const overdueTasks = tasks.filter((t: TaskType) => t.dueDate && new Date(t.dueDate) < new Date() && !t.completed);
 
     const stats = {
       total: tasks.length,
@@ -167,7 +178,7 @@ export const exportToPDF = async (req: Request, res: Response): Promise<void> =>
 
       doc.moveDown(1.5);
 
-      tasks.forEach((task, index) => {
+      tasks.forEach((task: TaskType, index: number) => {
         const rowY = doc.y;
         const isEven = index % 2 === 0;
 
