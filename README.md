@@ -100,6 +100,9 @@
 - **🗄️ PostgreSQL + Prisma** - Type-safe database ORM with migrations
 - **🐳 Docker Multi-stage** - Optimized container builds
 - **🔧 CI/CD Pipeline** - Automated deployments via GitHub
+- **📊 GraphQL API** - Apollo Server with full CRUD operations
+- **📥 CSV Export** - Client-side generation with file-saver
+- **📄 PDF Export** - Professional PDF generation with jsPDF
 
 ---
 
@@ -116,6 +119,8 @@
 | **Icons** | ![Lucide React](https://img.shields.io/badge/Lucide_React-0.563-F56565?style=flat-square&logo=lucide) | 0.563 | Icon library |
 | **Testing** | ![Jest](https://img.shields.io/badge/Jest-30.0-C21325?style=flat-square&logo=jest) + ![RTL](https://img.shields.io/badge/RTL-16.0-FF6B6B?style=flat-square) | - | Unit & integration tests (56 tests) |
 | **Date Handling** | ![date-fns](https://img.shields.io/badge/date--fns-4.1-770C56?style=flat-square&logo=date-fns) | 4.1 | Date formatting |
+| **File Export** | ![jsPDF](https://img.shields.io/badge/jsPDF-2.5-000000?style=flat-square) | 2.5 | PDF generation |
+| **File Export** | ![file-saver](https://img.shields.io/badge/file--saver-2.0-000000?style=flat-square) | 2.0 | CSV generation |
 
 ### **Backend**
 | Category | Technology | Version | Purpose |
@@ -125,6 +130,7 @@
 | **Language** | ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript) | 5.9.3 | Type safety |
 | **Database** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat-square&logo=postgresql) | 15 | Relational database |
 | **ORM** | ![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748?style=flat-square&logo=prisma) | 6.19.2 | Type-safe database client |
+| **GraphQL** | ![Apollo](https://img.shields.io/badge/Apollo-5.5-333333?style=flat-square) | 5.5 | GraphQL API |
 | **Authentication** | ![JWT](https://img.shields.io/badge/JWT-9.0-000000?style=flat-square&logo=json-web-tokens) + ![Bcrypt](https://img.shields.io/badge/Bcrypt-6.0-003A70?style=flat-square) | - | Secure auth |
 | **Validation** | ![Zod](https://img.shields.io/badge/Zod-4.3-3068B7?style=flat-square&logo=zod) | 4.3 | Schema validation |
 | **Security** | ![Helmet](https://img.shields.io/badge/Helmet-8.1-000000?style=flat-square) + ![CORS](https://img.shields.io/badge/CORS-2.8-FF6B6B?style=flat-square) | - | Security headers |
@@ -405,10 +411,10 @@ npm test:coverage # Coverage report
 
 | Short Term | Medium Term | Long Term |
 |------------|-------------|-----------|
-| 📊 Dashboard with charts | 👥 Team collaboration | 📱 Mobile app |
-| 📄 CSV/PDF export | 🔄 WebSockets real-time | 🤖 AI task suggestions |
-| 🏷️ Categories/Tags | 📎 File attachments | 📅 Calendar integration |
-| ⏰ Due dates/Reminders | 📧 Email notifications | 🔐 Enterprise SSO |
+| ✅ CSV/PDF export | 👥 Team collaboration | 📱 Mobile app |
+| ✅ GraphQL API | 🔄 WebSockets real-time | 🤖 AI task suggestions |
+| 📊 Dashboard with charts | 🏷️ Categories/Tags | 📎 File attachments |
+| ⏰ Due dates/Reminders | 📧 Email notifications | 📅 Calendar integration |
 
 ---
 
