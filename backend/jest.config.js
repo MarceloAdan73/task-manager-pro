@@ -15,4 +15,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   verbose: true,
   testTimeout: 10000,
+  maxWorkers: 1,
+  forceExit: true,
+  setupFiles: ['<rootDir>/tests/setup/env.test.js'],
 };
