@@ -176,6 +176,12 @@ export default function Home() {
               onClick={() => setActiveTab("completed")}
               count={stats.completed}
             />
+            <NavItem
+              icon={Code2}
+              label="GraphQL"
+              active={false}
+              onClick={() => router.push('/graphql')}
+            />
           </nav>
         </div>
 
