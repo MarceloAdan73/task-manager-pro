@@ -38,7 +38,7 @@ COPY --from=builder /app/next.config.js ./
 USER nodejs
 
 # Exponer puerto (Next.js por defecto es 3000)
-EXPOSE 3004
+EXPOSE 3000
 
 # Comando para iniciar la app
 CMD ["npm", "start"]
