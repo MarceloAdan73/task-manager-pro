@@ -12,7 +12,11 @@ export default function ExportButton() {
     if (!token || !user) return;
     setIsExporting(true);
     try {
-      const response = await fetch('/api/export/csv', {
+      const url = token === 'authenticated' && user?.id
+        ? `/api/export/csv?userId=${user.id}`
+        : '/api/export/csv';
+      
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -43,7 +47,11 @@ export default function ExportButton() {
     if (!token || !user) return;
     setIsExporting(true);
     try {
-      const response = await fetch('/api/export/pdf', {
+      const url = token === 'authenticated' && user?.id
+        ? `/api/export/pdf?userId=${user.id}`
+        : '/api/export/pdf';
+      
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
