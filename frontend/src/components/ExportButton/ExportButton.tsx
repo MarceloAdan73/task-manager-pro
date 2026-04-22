@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
 import { useTasks } from '@/hooks/useTasks';
 
 export default function ExportButton() {
@@ -45,61 +46,71 @@ export default function ExportButton() {
   const exportToPDF = () => {
     setIsExporting(true);
     try {
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Tasks - ${new Date().toLocaleDateString()}</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { color: #333; margin-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background: #333; color: white; }
-            .completed { color: green; }
-            .pending { color: orange; }
-            @media print { body { -webkit-print-color-adjust: exact; } }
-          </style>
-        </head>
-        <body>
-          <h1>Tasks - ${new Date().toLocaleDateString()}</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tasks.map(task => `
-                <tr>
-                  <td>${task.title || ''}</td>
-                  <td>${task.description || ''}</td>
-                  <td>${task.priority || 'MEDIUM'}</td>
-                  <td class="${task.completed ? 'completed' : 'pending'}">${task.completed ? 'Completed' : 'Pending'}</td>
-                  <td>${task.createdAt ? new Date(task.createdAt).toLocaleDateString() : ''}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </body>
-        </html>
-      `;
-
-      const blob = new Blob([printContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
       
-      const win = window.open(url, '_blank');
-      if (win) {
-        win.focus();
-        setExportSuccess('PDF');
-      } else {
-        location.href = url;
-        setExportSuccess('PDF');
-      }
+      doc.setFontSize(18);
+      doc.text('Task Manager Pro - Tasks Report', pageWidth / 2, 20, { align: 'center' });
+      
+      doc.setFontSize(10);
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 28, { align: 'center' });
+
+      let y = 45;
+      doc.setFontSize(12);
+      doc.text('Tasks Summary', 14, y);
+      y += 10;
+      
+      doc.setFontSize(10);
+      const completed = tasks.filter(t => t.completed).length;
+      const pending = tasks.filter(t => !t.completed).length;
+      doc.text(`Total: ${tasks.length} | Completed: ${completed} | Pending: ${pending}`, 14, y);
+      y += 15;
+
+      const headers = ['Title', 'Priority', 'Status'];
+      const colWidths = [100, 30, 30];
+      let x = 14;
+      
+      doc.setFillColor(40, 40, 40);
+      doc.rect(14, y - 5, pageWidth - 28, 10, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      
+      headers.forEach((header, i) => {
+        doc.text(header, x, y);
+        x += colWidths[i];
+      });
+      
+      y += 8;
+      doc.setTextColor(0, 0, 0);
+      
+      tasks.forEach((task, index) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        
+        x = 14;
+        if (index % 2 === 0) {
+          doc.setFillColor(245, 245, 245);
+          doc.rect(14, y - 4, pageWidth - 28, 8, 'F');
+        }
+        
+        const title = task.title?.substring(0, 35) || '';
+        doc.text(title, x, y);
+        x += colWidths[0];
+        
+        const priority = task.priority || 'MEDIUM';
+        doc.text(priority, x, y);
+        x += colWidths[1];
+        
+        const status = task.completed ? 'Done' : 'Pending';
+        doc.text(status, x, y);
+        
+        y += 8;
+      });
+
+      doc.save(`tasks_report_${new Date().toISOString().split('T')[0]}.pdf`);
+      setExportSuccess('PDF');
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
       console.error('[PDF Export] Error:', error);
