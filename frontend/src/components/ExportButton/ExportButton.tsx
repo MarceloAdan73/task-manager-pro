@@ -42,7 +42,7 @@ export default function ExportButton() {
     }
   };
 
-  const exportToPDF = async () => {
+  const exportToPDF = () => {
     setIsExporting(true);
     try {
       const printContent = `
@@ -91,14 +91,15 @@ export default function ExportButton() {
 
       const blob = new Blob([printContent], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
-      const win = window.open(url, '_blank');
       
+      const win = window.open(url, '_blank');
       if (win) {
-        win.onload = () => {
-          win.print();
-        };
+        win.focus();
+        setExportSuccess('PDF');
+      } else {
+        location.href = url;
+        setExportSuccess('PDF');
       }
-      setExportSuccess('PDF');
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
       console.error('[PDF Export] Error:', error);
