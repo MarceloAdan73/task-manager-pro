@@ -22,8 +22,9 @@
 | Environment | 🔗 URL | 📊 Status |
 |:-----------:|:-------|:---------:|
 | **🎨 Frontend** <br/> (Vercel) | [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://task-manager-pro-psi.vercel.app) | 🟢 Active |
-| **⚙️ Backend API** <br/> (Render) | [![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)](https://task-manager-backend-le9g.onrender.com) | 🟢 Active |
-| **🩺 Health Check** <br/> (PostgreSQL) | [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://task-manager-backend-le9g.onrender.com/api/health) | ✅ Connected |
+| **🗄️ Database** <br/> (Supabase) | [![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com) | 🟢 Active |
+
+
 
 ---
 
@@ -267,8 +268,6 @@ Email: demo@taskmanager.com
 Password: demo123
 ```
 
----
-
 ### **Option 2: Local Development**
 
 #### 📋 **Prerequisites**
@@ -327,18 +326,6 @@ docker-compose down
 
 ---
 
-### **Option 4: Production URLs**
-
-```
-🌐 Frontend: https://task-manager-pro-psi.vercel.app
-⚙️ Backend:  https://task-manager-backend-le9g.onrender.com
-🔍 Health:   https://task-manager-backend-le9g.onrender.com/api/health
-🔑 Login:    https://task-manager-backend-le9g.onrender.com/api/auth/login
-📋 Tasks:    https://task-manager-backend-le9g.onrender.com/api/tasks
-```
-
----
-
 ## 🎮 Usage Guide
 
 ### **Authentication**
@@ -361,44 +348,6 @@ docker-compose down
 - 🌙 **Dark Mode** - Click sun/moon icon in header
 - 📱 **Responsive** - Works on mobile, tablet, desktop
 - ⚡ **Real-time** - Optimistic updates with React Query
-
----
-
-## 🔧 API Documentation
-
-### **Base URL**
-```
-Production: https://task-manager-backend-le9g.onrender.com/api
-Local:      http://localhost:3005/api
-```
-
-### **Authentication Endpoints**
-
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| **POST** | `/auth/login` | User login | `{ "email": "string", "password": "string" }` | `{ "token": "jwt", "user": {...} }` |
-| **GET** | `/auth/verify` | Verify token | - | `{ "user": {...} }` |
-
-### **Task Endpoints** (Requires JWT)
-
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| **GET** | `/tasks` | Get all tasks | - | `{ "data": [...] }` |
-| **GET** | `/tasks/:id` | Get single task | - | `{ "data": {...} }` |
-| **POST** | `/tasks` | Create task | `{ "title": "string", "description?": "string", "priority?": "LOW\|MEDIUM\|HIGH\|URGENT" }` | `{ "data": {...} }` |
-| **PUT** | `/tasks/:id` | Update task | `{ "title?": "string", "description?": "string", "completed?": "boolean", "priority?": "..." }` | `{ "data": {...} }` |
-| **DELETE** | `/tasks/:id` | Delete task | - | `{ "success": true }` |
-| **PATCH** | `/tasks/:id/toggle` | Toggle completion | - | `{ "data": {...} }` |
-
-### **Response Format**
-```json
-{
-  "success": true,
-  "data": {},     // For single resources
-  "data": [],     // For collections
-  "error": "message"
-}
-```
 
 ---
 
