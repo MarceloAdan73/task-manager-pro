@@ -4,6 +4,10 @@ import dotenv from 'dotenv';
 import taskRoutes from './routes/task.routes';
 import authRoutes from './routes/auth.routes';
 import exportRoutes from './routes/export.routes';
+import { graphqlSchema } from './graphql/schema';
+import { ApolloServer } from '@apollo/server';
+// @ts-ignore - Apollo Server 4
+import { expressMiddleware } from '@apollo/server/express4';
 
 // ========== IMPORT ENHANCED SECURITY CONFIGURATIONS ==========
 import { corsOptions } from './config/cors';
@@ -72,6 +76,32 @@ app.use('/api/tasks', taskRoutes);
 
 // Export routes (protected by JWT middleware)
 app.use('/api/export', exportRoutes);
+
+// ========== GRAPHQL ENDPOINT ==========
+// @ts-ignore - GraphQL context type
+async function startGraphQL() {
+  // @ts-ignore - Apollo Server 4 types
+  const graphqlServer = new ApolloServer({ schema: graphqlSchema });
+  await graphqlServer.start();
+
+  // @ts-ignore - Apollo Server 4 types
+  app.use('/graphql', expressMiddleware(graphqlServer, {
+    context: async ({ req }: any) => {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        try {
+          const jwt = require('jsonwebtoken');
+          const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+          return { userId: decoded.userId };
+        } catch {}
+      }
+      return { userId: null };
+    },
+  }));
+
+  console.log('📊 GraphQL endpoint: http://localhost:' + PORT + '/graphql');
+}
 
 // ========== ENHANCED ROOT ROUTE ==========
 app.get('/', (req: Request, res: Response) => {
@@ -158,7 +188,8 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
 
 // ========== START SERVER WITH ENHANCED INFO ==========
 if (require.main === module) {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
+    await startGraphQL();
     console.log('🚀 ========================================');
     console.log('🚀 BACKEND CON SEGURIDAD MEJORADA');
     console.log('🚀 Puerto:', PORT);
@@ -167,6 +198,7 @@ if (require.main === module) {
     console.log('🚀 ========================================');
     console.log('✅ API: http://localhost:' + PORT);
     console.log('✅ Health: http://localhost:' + PORT + '/api/health');
+    console.log('✅ GraphQL: http://localhost:' + PORT + '/graphql');
     console.log('✅ Security Features:');
     console.log('   • CORS: Origin-specific');
     console.log('   • Rate Limiting: Enabled');

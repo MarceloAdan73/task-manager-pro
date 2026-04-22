@@ -1,38 +1,35 @@
 'use client';
 
 import { useState } from 'react';
-import { saveAs } from 'file-saver';
-import { useTasks } from '@/hooks/useTasks';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ExportButton() {
-  const { tasks } = useTasks();
+  const { token, user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState<string | null>(null);
 
-  const convertToCSV = (data: typeof tasks): string => {
-    if (!data.length) return '';
-
-    const headers = ['ID', 'Title', 'Description', 'Priority', 'Completed', 'Created At', 'Updated At'];
-    const rows = data.map(task => [
-      task.id,
-      `"${(task.title || '').replace(/"/g, '""')}"`,
-      `"${(task.description || '').replace(/"/g, '""')}"`,
-      task.priority || 'MEDIUM',
-      task.completed ? 'Yes' : 'No',
-      task.createdAt ? new Date(task.createdAt).toISOString() : '',
-      task.updatedAt ? new Date(task.updatedAt).toISOString() : '',
-    ]);
-
-    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-  };
-
   const exportToCSV = async () => {
+    if (!token || !user) return;
     setIsExporting(true);
     try {
-      await new Promise(r => setTimeout(r, 300));
-      const csv = convertToCSV(tasks);
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      saveAs(blob, `tasks-${new Date().toISOString().split('T')[0]}.csv`);
+      const response = await fetch('/api/export/csv', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('Export failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tasks-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
       setExportSuccess('CSV');
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
@@ -42,64 +39,29 @@ export default function ExportButton() {
     }
   };
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
+    if (!token || !user) return;
     setIsExporting(true);
     try {
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Tasks - ${new Date().toLocaleDateString()}</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { color: #333; margin-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background: #333; color: white; }
-            .completed { color: green; }
-            .pending { color: orange; }
-            @media print { body { -webkit-print-color-adjust: exact; } }
-          </style>
-        </head>
-        <body>
-          <h1>Tasks - ${new Date().toLocaleDateString()}</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tasks.map(task => `
-                <tr>
-                  <td>${task.title || ''}</td>
-                  <td>${task.description || ''}</td>
-                  <td>${task.priority || 'MEDIUM'}</td>
-                  <td class="${task.completed ? 'completed' : 'pending'}">${task.completed ? 'Completed' : 'Pending'}</td>
-                  <td>${task.createdAt ? new Date(task.createdAt).toLocaleDateString() : ''}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </body>
-        </html>
-      `;
+      const response = await fetch('/api/export/pdf', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
 
-      const blob = new Blob([printContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      
-      const win = window.open(url, '_blank');
-      if (win) {
-        win.focus();
-        setExportSuccess('PDF');
-      } else {
-        location.href = url;
-        setExportSuccess('PDF');
-      }
+      if (!response.ok) throw new Error('Export failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tasks_report_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setExportSuccess('PDF');
       setTimeout(() => setExportSuccess(null), 2000);
     } catch (error) {
       console.error('[PDF Export] Error:', error);
@@ -108,7 +70,7 @@ export default function ExportButton() {
     }
   };
 
-  if (!tasks.length) {
+  if (!token || !user) {
     return (
       <div className="flex gap-2">
         <button
