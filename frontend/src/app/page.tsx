@@ -337,10 +337,10 @@ export default function Home() {
                     <Layers className="w-4 h-4 text-zinc-400" />
                     Task Overview
                   </h2>
-                  <div className="flex items-center gap-3">
-                    <ExportButton />
-                    <span className="text-xs text-zinc-500">Live Updates</span>
-                  </div>
+<div className="flex items-center gap-3">
+                      <ExportButton taskCount={tasks.length} />
+                      <span className="text-xs text-zinc-500">Live Updates</span>
+                    </div>
                 </div>
 
                 <div className="flex-1">
