@@ -3,10 +3,16 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
-export default function ExportButton() {
+interface ExportButtonProps {
+  taskCount: number;
+}
+
+export default function ExportButton({ taskCount }: ExportButtonProps) {
   const { token, user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState<string | null>(null);
+
+  const isDisabled = !token || !user || taskCount === 0;
 
   const exportToCSV = async () => {
     if (!token || !user) return;
@@ -80,7 +86,7 @@ export default function ExportButton() {
     }
   };
 
-  if (!token || !user) {
+  if (isDisabled) {
     return (
       <div className="flex gap-2">
         <button
