@@ -6,7 +6,6 @@ import authRoutes from './routes/auth.routes';
 import exportRoutes from './routes/export.routes';
 import { graphqlSchema } from './graphql/schema';
 import { ApolloServer } from '@apollo/server';
-// @ts-ignore - Apollo Server 4
 import { expressMiddleware } from '@apollo/server/express4';
 
 // ========== IMPORT ENHANCED SECURITY CONFIGURATIONS ==========
