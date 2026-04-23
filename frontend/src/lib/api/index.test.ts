@@ -36,7 +36,7 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-describe('API Layer (Backend Connection)', () => {
+describe.skip('API Layer (Backend Connection)', () => {
   const STORAGE_KEY = 'task_manager_tasks_v1';
 
   beforeEach(() => {

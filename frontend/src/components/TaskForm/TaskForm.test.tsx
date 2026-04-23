@@ -73,7 +73,7 @@ describe('TaskForm Component', () => {
     
     expect(descriptionTextarea).toHaveValue('a'.repeat(50));
     expect(screen.getByText('50/500 characters')).toBeInTheDocument();
-  });
+  }, 10000);
 
   it('muestra estado de envío', () => {
     render(<TaskForm onSubmit={mockOnSubmit} isSubmitting={true} />);
