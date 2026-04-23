@@ -117,7 +117,7 @@
 | **Styling** | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=flat-square&logo=tailwind-css) | 3.4 | Utility-first CSS |
 | **UI Components** | ![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.29-0055FF?style=flat-square&logo=framer) | 12.29 | Animations |
 | **Icons** | ![Lucide React](https://img.shields.io/badge/Lucide_React-0.563-F56565?style=flat-square&logo=lucide) | 0.563 | Icon library |
-| **Testing** | ![Jest](https://img.shields.io/badge/Jest-30.0-C21325?style=flat-square&logo=jest) + ![RTL](https://img.shields.io/badge/RTL-16.0-FF6B6B?style=flat-square) | - | Unit & integration tests (44 tests) |
+| **Testing** | ![Jest](https://img.shields.io/badge/Jest-30.0-C21325?style=flat-square&logo=jest) + ![RTL](https://img.shields.io/badge/RTL-16.0-FF6B6B?style=flat-square) | - | Unit & integration tests (56 tests) |
 | **Date Handling** | ![date-fns](https://img.shields.io/badge/date--fns-4.1-770C56?style=flat-square&logo=date-fns) | 4.1 | Date formatting |
 | **File Export** | ![jsPDF](https://img.shields.io/badge/jsPDF-2.5-000000?style=flat-square) | 2.5 | PDF generation |
 | **File Export** | ![file-saver](https://img.shields.io/badge/file--saver-2.0-000000?style=flat-square) | 2.0 | CSV generation |
@@ -250,9 +250,9 @@ task-manager-pro/
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| **Frontend Tests** | 44/44 | ![100%](https://img.shields.io/badge/100%25-success) |
+| **Frontend Tests** | 56/56 | ![100%](https://img.shields.io/badge/100%25-success) |
 | **Backend Tests** | 30/30 | ![100%](https://img.shields.io/badge/100%25-success) |
-| **Total Tests** | 74/74 | ![100%](https://img.shields.io/badge/100%25-success) |
+| **Total Tests** | 86/86 | ![100%](https://img.shields.io/badge/100%25-success) |
 | **TypeScript Errors** | 0 | ![Strict](https://img.shields.io/badge/Strict-0%20errors-blue) |
 | **Docker Images** | 2 (backend + frontend) | ![Docker](https://img.shields.io/badge/Docker-optimized-blue) |
 | **Containers** | 3 (db + backend + frontend) | ![Compose](https://img.shields.io/badge/Compose-ready-green) |
