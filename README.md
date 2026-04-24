@@ -370,18 +370,67 @@ docker-compose down
 | `docker-compose down -v` | Stop and delete database |
 | `docker-compose build backend` | Rebuild backend only |
 
-### WebSocket (Socket.io) - Local Only
+### WebSocket (Socket.io) - Local Development Only
 
-When running with Docker, the application includes real-time WebSocket support:
+The application implements real-time bidirectional communication using Socket.io, available exclusively in the local Docker environment for demonstration purposes.
 
-```bash
-# Test WebSocket connection
-ws://localhost:3005
+#### Architecture
 
-# Events: task:created, task:updated, task:deleted
+| Layer | Technology | Description |
+|-------|------------|-------------|
+| Transport | WebSocket + Polling | Dual transport with automatic fallback |
+| Protocol | Socket.io 4.8.3 | Event-based real-time protocol |
+| Authentication | JWT (jsonwebtoken) | Token passed via handshake auth |
+| Authorization | Middleware | Per-connection JWT verification |
+
+#### Server Implementation
+
+```typescript
+// Socket.io server with JWT authentication
+const io = new Server(httpServer, { cors: { ... } });
+io.use(authMiddleware);  // JWT verification on every connection
+io.on('connection', (socket) => {
+  socket.on('join:user', (userId) => socket.join(`user:${userId}`));
+});
 ```
 
-This feature is for local development demonstration only.
+#### Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `task:created` | `{ taskId, userId, data, timestamp }` | New task created |
+| `task:updated` | `{ taskId, userId, data, timestamp }` | Task modified |
+| `task:deleted` | `{ taskId, userId, timestamp }` | Task removed |
+
+#### Client Connection
+
+```typescript
+// Frontend hook pattern
+const socket = io(url, {
+  auth: { token: jwt },
+  transports: ['websocket', 'polling'],
+  reconnection: true,
+  reconnectionAttempts: 5,
+});
+socket.emit('join:user', userId);
+```
+
+#### Testing
+
+```bash
+# WebSocket endpoint
+ws://localhost:3005
+
+# Or with wscat
+npx wscat -c ws://localhost:3005 -t "Bearer <jwt_token>"
+```
+
+> **Note**: WebSocket functionality is restricted to local Docker deployment for demonstration. Production deployments (Vercel + Render) utilize Supabase for real-time subscriptions.
+
+---
+
+| Command | Description |
+|---------|-------------|
 | `docker exec -it taskmanager-backend sh` | Access container shell |
 | `docker ps` | List running containers |
 | `docker stats` | View resource usage |
