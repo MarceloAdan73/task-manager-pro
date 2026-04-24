@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 interface User {
   id: string;
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -37,30 +39,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { data: userData, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
-    if (error || !userData) {
-      throw new Error('Invalid credentials');
-    }
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
 
-    if (userData.password !== password) {
-      throw new Error('Invalid credentials');
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || 'Login failed');
     }
 
     const user: User = {
-      id: userData.id,
-      email: userData.email,
-      name: userData.name
+      id: data.user.id,
+      email: data.user.email,
+      name: data.user.name
     };
 
-    setToken('authenticated');
+    setToken(data.token);
     setUser(user);
-    localStorage.setItem('token', 'authenticated');
-    localStorage.setItem('userId', userData.id);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', user.id);
     localStorage.setItem('user', JSON.stringify(user));
   };
 
@@ -89,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

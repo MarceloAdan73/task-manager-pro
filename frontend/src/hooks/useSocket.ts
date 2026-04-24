@@ -17,17 +17,19 @@ interface TaskEvent {
 
 export function useSocket() {
   const socketRef = useRef<Socket | null>(null);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const queryClient = useQueryClient();
 
   const connect = useCallback(() => {
     if (socketRef.current?.connected) return;
     if (typeof window === 'undefined') return;
+    if (!token) return;
 
     const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || window.location.origin;
 
     try {
       socketRef.current = io(socketUrl, {
+        auth: { token },
         transports: ['websocket', 'polling'],
         autoConnect: true,
         reconnection: true,
@@ -83,7 +85,7 @@ export function useSocket() {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       connect();
     } else {
       disconnect();
@@ -92,7 +94,7 @@ export function useSocket() {
     return () => {
       disconnect();
     };
-  }, [user, connect, disconnect]);
+  }, [user, token, connect, disconnect]);
 
   return {
     socket: socketRef.current,
