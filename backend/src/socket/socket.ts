@@ -15,9 +15,13 @@ export interface TaskEvent {
 export function initializeSocket(httpServer: HttpServer): Server {
   if (io) return io;
 
+  const isProduction = envConfig.NODE_ENV === 'production';
+
   io = new Server(httpServer, {
     cors: {
-      origin: envConfig.FRONTEND_URL,
+      origin: isProduction
+        ? [envConfig.FRONTEND_URL]
+        : [envConfig.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:3004'],
       methods: ['GET', 'POST'],
       credentials: true
     }
@@ -27,8 +31,10 @@ export function initializeSocket(httpServer: HttpServer): Server {
     console.log(`🔌 Client connected: ${socket.id}`);
 
     socket.on('join:user', (userId: string) => {
-      console.log(`👤 User ${userId} joined room`);
-      socket.join(`user:${userId}`);
+      if (userId && typeof userId === 'string') {
+        console.log(`👤 User ${userId} joined room`);
+        socket.join(`user:${userId}`);
+      }
     });
 
     socket.on('disconnect', () => {

@@ -22,46 +22,57 @@ export function useSocket() {
 
   const connect = useCallback(() => {
     if (socketRef.current?.connected) return;
+    if (typeof window === 'undefined') return;
 
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3005';
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || window.location.origin;
 
-    socketRef.current = io(socketUrl, {
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-    });
+    try {
+      socketRef.current = io(socketUrl, {
+        transports: ['websocket', 'polling'],
+        autoConnect: true,
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+      });
 
-    socketRef.current.on('connect', () => {
-      console.log('🔌 WebSocket connected');
-      if (user?.id) {
-        socketRef.current?.emit('join:user', user.id);
-      }
-    });
+      socketRef.current.on('connect', () => {
+        console.log('🔌 WebSocket connected');
+        if (user?.id) {
+          socketRef.current?.emit('join:user', user.id);
+        }
+      });
 
-    socketRef.current.on('disconnect', () => {
-      console.log('🔌 WebSocket disconnected');
-    });
+      socketRef.current.on('disconnect', () => {
+        console.log('🔌 WebSocket disconnected');
+      });
 
-    socketRef.current.on('task:created', (event: TaskEvent) => {
-      if (event.userId !== user?.id) {
-        toast.success(`Nueva tarea: "${event.data?.title}"`);
-        queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      }
-    });
+      socketRef.current.on('task:created', (event: TaskEvent) => {
+        if (event.userId !== user?.id) {
+          toast.success(`Nueva tarea: "${event.data?.title || 'Tarea'}"`);
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        }
+      });
 
-    socketRef.current.on('task:updated', (event: TaskEvent) => {
-      if (event.userId !== user?.id) {
-        toast.success(`Tarea actualizada: "${event.data?.title}"`);
-        queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      }
-    });
+      socketRef.current.on('task:updated', (event: TaskEvent) => {
+        if (event.userId !== user?.id) {
+          toast.success(`Tarea actualizada: "${event.data?.title || 'Tarea'}"`);
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        }
+      });
 
-    socketRef.current.on('task:deleted', (event: TaskEvent) => {
-      if (event.userId !== user?.id) {
-        toast('Una tarea fue eliminada');
-        queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      }
-    });
+      socketRef.current.on('task:deleted', (event: TaskEvent) => {
+        if (event.userId !== user?.id) {
+          toast('Una tarea fue eliminada', { icon: '🗑️' });
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        }
+      });
 
+      socketRef.current.on('connect_error', (error) => {
+        console.warn('⚠️ WebSocket connection error:', error.message);
+      });
+    } catch (error) {
+      console.warn('⚠️ WebSocket initialization failed:', error);
+    }
   }, [user, queryClient]);
 
   const disconnect = useCallback(() => {
