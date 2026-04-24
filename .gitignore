@@ -34,3 +34,7 @@
 # Logs
 **/*.log
 **/npm-debug.log*
+
+# Lock files (regenerate with npm install)
+**/package-lock.json
+**/yarn.lock
