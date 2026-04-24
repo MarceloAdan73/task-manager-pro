@@ -4,7 +4,9 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from './providers/query-provider';
 import { ThemeProvider } from '../context/ThemeContext';
-import { AuthProvider } from '../context/AuthContext'; 
+import { AuthProvider } from '../context/AuthContext';
+import { Toaster } from 'react-hot-toast';
+import { SocketProvider } from '../context/SocketContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,11 +29,14 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider>
-          <AuthProvider> {/* ✅ NUEVO */}
+          <AuthProvider>
             <QueryProvider>
-              {children}
+              <SocketProvider>
+                <Toaster position="top-right" />
+                {children}
+              </SocketProvider>
             </QueryProvider>
-          </AuthProvider> {/* ✅ NUEVO */}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
