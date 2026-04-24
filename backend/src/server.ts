@@ -1,11 +1,13 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
 import taskRoutes from './routes/task.routes';
 import authRoutes from './routes/auth.routes';
 import exportRoutes from './routes/export.routes';
 import { graphqlSchema } from './graphql/schema';
 import { ApolloServer } from '@apollo/server';
+import { initializeSocket } from './socket/socket';
 // @ts-ignore - Apollo Server 4
 import { expressMiddleware } from '@apollo/server/express4';
 
@@ -188,7 +190,10 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
 
 // ========== START SERVER WITH ENHANCED INFO ==========
 if (require.main === module) {
-  app.listen(PORT, async () => {
+  const httpServer = createServer(app);
+  initializeSocket(httpServer);
+
+  httpServer.listen(PORT, async () => {
     await startGraphQL();
     console.log('🚀 ========================================');
     console.log('🚀 BACKEND CON SEGURIDAD MEJORADA');
@@ -199,6 +204,7 @@ if (require.main === module) {
     console.log('✅ API: http://localhost:' + PORT);
     console.log('✅ Health: http://localhost:' + PORT + '/api/health');
     console.log('✅ GraphQL: http://localhost:' + PORT + '/graphql');
+    console.log('✅ Socket.io: ws://localhost:' + PORT);
     console.log('✅ Security Features:');
     console.log('   • CORS: Origin-specific');
     console.log('   • Rate Limiting: Enabled');

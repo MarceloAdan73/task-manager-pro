@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../database/prisma';
 import { Priority, normalizePriority, formatTaskForFrontend } from '../utils/priorityUtils';
+import { emitTaskEvent } from '../socket/socket';
 
 console.log('Controller task.controller.ts CARGADO (VERSIÓN OPTIMIZADA)');
 
@@ -139,9 +140,18 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
 
     console.log(`Tarea creada en PostgreSQL: ${task.id} - "${task.title}" para user ${userId}`);
 
+    const formattedTask = formatTaskForFrontend(task);
+    emitTaskEvent({
+      type: 'task:created',
+      taskId: task.id,
+      userId,
+      data: formattedTask,
+      timestamp: new Date().toISOString()
+    });
+
     res.status(201).json({
       success: true,
-      data: formatTaskForFrontend(task)
+      data: formattedTask
     });
   } catch (error: any) {
     console.error('Error creando tarea:', error);
@@ -227,9 +237,18 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
 
     console.log(`Tarea actualizada en PostgreSQL: ${task.id} - "${task.title}"`);
 
+    const formattedTask = formatTaskForFrontend(task);
+    emitTaskEvent({
+      type: 'task:updated',
+      taskId: task.id,
+      userId,
+      data: formattedTask,
+      timestamp: new Date().toISOString()
+    });
+
     res.json({
       success: true,
-      data: formatTaskForFrontend(task)
+      data: formattedTask
     });
   } catch (error: any) {
     console.error('Error actualizando tarea:', error);
@@ -279,6 +298,14 @@ export const deleteTask = async (req: Request, res: Response): Promise<void> => 
     await prisma.task.delete({ where: { id } });
 
     console.log(`Tarea eliminada de PostgreSQL: ${id}`);
+
+    emitTaskEvent({
+      type: 'task:deleted',
+      taskId: id,
+      userId,
+      data: existingTask,
+      timestamp: new Date().toISOString()
+    });
 
     res.json({
       success: true,
