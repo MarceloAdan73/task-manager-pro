@@ -41,8 +41,8 @@ export const fetchTasks = async (): Promise<Task[]> => {
     const tasks = (data || []).map(parseDates);
     saveTasksToStorage(tasks);
     return tasks;
-  } catch (error) {
-    console.error('[API] Error fetching tasks:', error);
+  } catch (error: any) {
+    console.warn('[API] Error fetching tasks, using local storage:', error?.message);
     const stored = getTasksFromStorage();
     if (stored.length > 0) return stored;
     return [];
