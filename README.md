@@ -322,6 +322,7 @@ docker-compose up -d
 # 3. Access application
 # Frontend: http://localhost:3004
 # Backend API: http://localhost:3005/api/health
+# WebSocket Server: ws://localhost:3005
 
 # 4. View logs (optional)
 docker-compose logs -f
@@ -329,6 +330,8 @@ docker-compose logs -f
 # 5. Stop services
 docker-compose down
 ```
+
+> ⚡ **WebSocket Feature:** Real-time notifications via Socket.io are available only in local Docker setup. Production deployment (Vercel + Supabase) uses Supabase API for data operations.
 
 ---
 
@@ -366,6 +369,19 @@ docker-compose down
 | `docker-compose down` | Stop all services |
 | `docker-compose down -v` | Stop and delete database |
 | `docker-compose build backend` | Rebuild backend only |
+
+### WebSocket (Socket.io) - Local Only
+
+When running with Docker, the application includes real-time WebSocket support:
+
+```bash
+# Test WebSocket connection
+ws://localhost:3005
+
+# Events: task:created, task:updated, task:deleted
+```
+
+This feature is for local development demonstration only.
 | `docker exec -it taskmanager-backend sh` | Access container shell |
 | `docker ps` | List running containers |
 | `docker stats` | View resource usage |
