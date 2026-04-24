@@ -19,6 +19,29 @@ interface AuthenticatedSocket extends Socket {
   userId?: string;
 }
 
+function authMiddleware(socket: Socket, next: (err?: Error) => void) {
+  const token = (socket.handshake.auth as Record<string, string>)?.token;
+
+  if (!token) {
+    console.warn(`🔒 Socket auth failed: No token provided (socket: ${socket.id})`);
+    return next(new Error('Authentication token required'));
+  }
+
+  jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+    if (err) {
+      console.warn(`🔒 Socket auth failed: Invalid token (socket: ${socket.id})`);
+      if (err.name === 'TokenExpiredError') {
+        return next(new Error('Token expired'));
+      }
+      return next(new Error('Invalid token'));
+    }
+
+    (socket as AuthenticatedSocket).userId = decoded.userId;
+    console.log(`🔑 Socket authenticated for user: ${decoded.userId}`);
+    next();
+  });
+}
+
 export function initializeSocket(httpServer: HttpServer): Server {
   if (io) return io;
 
@@ -31,30 +54,10 @@ export function initializeSocket(httpServer: HttpServer): Server {
         : [envConfig.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:3004'],
       methods: ['GET', 'POST'],
       credentials: true
-    },
-    auth: (socket: any, next: (err?: Error) => void) => {
-      const token = socket.handshake.auth?.token;
-
-      if (!token) {
-        console.warn(`🔒 Socket auth failed: No token provided (socket: ${socket.id})`);
-        return next(new Error('Authentication token required'));
-      }
-
-      jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-        if (err) {
-          console.warn(`🔒 Socket auth failed: Invalid token (socket: ${socket.id})`);
-          if (err.name === 'TokenExpiredError') {
-            return next(new Error('Token expired'));
-          }
-          return next(new Error('Invalid token'));
-        }
-
-        (socket as AuthenticatedSocket).userId = decoded.userId;
-        console.log(`🔑 Socket authenticated for user: ${decoded.userId}`);
-        next();
-      });
     }
   });
+
+  io.use(authMiddleware);
 
   io.on('connection', (socket: AuthenticatedSocket) => {
     console.log(`🔌 Client connected: ${socket.id} (user: ${socket.userId})`);
