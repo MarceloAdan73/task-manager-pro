@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { supabaseAdmin } from '@/lib/server/supabase';
+import { supabase } from '@/lib/server/supabase';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data: tasks, error } = await supabaseAdmin
+    const { data: tasks, error } = await supabase
       .from('tasks')
       .select('*')
       .eq('user_id', userId)
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       user_id: userId
     };
 
-    const { data: task, error } = await supabaseAdmin
+    const { data: task, error } = await supabase
       .from('tasks')
       .insert(taskData)
       .select()
