@@ -37,9 +37,9 @@ CREATE INDEX idx_users_email ON users(email);
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies for users
-CREATE POLICY "Users can select their own data" ON users
-  FOR SELECT USING (auth.uid() = id);
+-- RLS Policies for users (public read for login)
+CREATE POLICY "Public can read users" ON users
+  FOR SELECT USING (true);
 
 CREATE POLICY "Users can insert their own data" ON users
   FOR INSERT WITH CHECK (auth.uid() = id);
@@ -61,9 +61,8 @@ CREATE POLICY "Users can delete their own tasks" ON tasks
   FOR DELETE USING (user_id = auth.uid());
 
 -- Insert demo user (password: demo123 - hashed with bcrypt)
--- Note: In production, use proper bcrypt hashing!
 INSERT INTO users (id, email, password, name) VALUES
-  ('00000000-0000-0000-0000-000000000001', 'demo@taskmanager.com', '$2b$10$xK1pqrstuvwxyz1234567890ABCDEFghijklmnopqrstu', 'Demo User');
+  ('00000000-0000-0000-0000-000000000001', 'demo@taskmanager.com', '$2b$10$Mfr.PtexOaYxpZ5jo4wmEOlF1YSQ5wnTy4Hz/mW98PyGOHzLYymf.', 'Demo User');
 
 -- Insert sample tasks for demo user
 INSERT INTO tasks (title, description, priority, completed, user_id) VALUES
