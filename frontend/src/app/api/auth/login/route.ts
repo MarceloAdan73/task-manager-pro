@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { supabaseAdmin } from '@/lib/server/supabase';
+import { supabase } from '@/lib/server/supabase';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 const JWT_EXPIRES_IN = '7d';
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { data: users, error } = await supabaseAdmin
+    const { data: users, error } = await supabase
       .from('users')
       .select('*')
       .eq('email', email)
