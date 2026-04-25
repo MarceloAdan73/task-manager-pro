@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { supabaseAdmin } from '@/lib/server/supabase';
+import { supabase } from '@/lib/server/supabase';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    const { data: task, error } = await supabaseAdmin
+    const { data: task, error } = await supabase
       .from('tasks')
       .select('*')
       .eq('id', id)
@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const { title, description, priority, completed, dueDate } = await request.json();
 
     // Verificar que la tarea existe y pertenece al usuario
-    const { data: existingTask, error: fetchError } = await supabaseAdmin
+    const { data: existingTask, error: fetchError } = await supabase
       .from('tasks')
       .select('*')
       .eq('id', id)
@@ -148,7 +148,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     updateData.updated_at = new Date().toISOString();
 
-    const { data: task, error } = await supabaseAdmin
+    const { data: task, error } = await supabase
       .from('tasks')
       .update(updateData)
       .eq('id', id)
@@ -190,7 +190,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
 
     // Verificar que la tarea existe y pertenece al usuario
-    const { data: existingTask, error: fetchError } = await supabaseAdmin
+    const { data: existingTask, error: fetchError } = await supabase
       .from('tasks')
       .select('*')
       .eq('id', id)
@@ -210,7 +210,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
       .from('tasks')
       .delete()
       .eq('id', id);
@@ -250,7 +250,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
 
     // Verificar que la tarea existe y pertenece al usuario
-    const { data: existingTask, error: fetchError } = await supabaseAdmin
+    const { data: existingTask, error: fetchError } = await supabase
       .from('tasks')
       .select('*')
       .eq('id', id)
@@ -272,7 +272,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     const newCompleted = !existingTask.completed;
 
-    const { data: task, error } = await supabaseAdmin
+    const { data: task, error } = await supabase
       .from('tasks')
       .update({ 
         completed: newCompleted,
