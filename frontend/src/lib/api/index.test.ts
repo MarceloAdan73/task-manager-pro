@@ -54,7 +54,7 @@ describe.skip('API Layer (Backend Connection)', () => {
 
       const result = await checkBackendConnection();
       expect(result).toBe(true);
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3005/api/health');
+      expect(fetch).toHaveBeenCalledWith("/api/health");
     });
 
     it('returns false when backend fails', async () => {
@@ -86,7 +86,7 @@ describe.skip('API Layer (Backend Connection)', () => {
 
       const tasks = await fetchTasks();
 
-      expect(fetch).toHaveBeenCalledWith("http://localhost:3005/api/tasks", expect.objectContaining({ headers: { "Content-Type": "application/json" } }));
+      expect(fetch).toHaveBeenCalledWith("/api/tasks", expect.objectContaining({ headers: { "Content-Type": "application/json" } }));
       expect(tasks).toHaveLength(1);
       expect(tasks[0].title).toBe('Backend Task');
       expect(tasks[0].createdAt).toBeInstanceOf(Date);
@@ -159,7 +159,7 @@ describe.skip('API Layer (Backend Connection)', () => {
       const task = await createTask(taskData);
 
       expect(fetch).toHaveBeenCalledWith(
-        'http://localhost:3005/api/tasks',
+        '/api/tasks',
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -223,7 +223,7 @@ describe.skip('API Layer (Backend Connection)', () => {
       const task = await updateTask(taskId, updates);
 
       expect(fetch).toHaveBeenCalledWith(
-        `http://localhost:3005/api/tasks/${taskId}`,
+        `/api/tasks/${taskId}`,
         expect.objectContaining({
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -276,7 +276,7 @@ describe.skip('API Layer (Backend Connection)', () => {
       await deleteTask(taskId);
 
       expect(fetch).toHaveBeenCalledWith(
-        `http://localhost:3005/api/tasks/${taskId}`,
+        `/api/tasks/${taskId}`,
         expect.objectContaining({
           method: 'DELETE'
         })
@@ -334,7 +334,7 @@ describe.skip('API Layer (Backend Connection)', () => {
       expect(result.completed).toBe(true);
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith(
-        'http://localhost:3005/api/tasks/123/toggle',
+        '/api/tasks/123/toggle',
         expect.objectContaining({
           method: 'PATCH',
           headers: {
