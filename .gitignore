@@ -30,10 +30,19 @@
 # Testing
 **/coverage/
 **/.nyc_output/
+**/playwright-report/
+**/test-results/
+
+# TypeScript
+**/*.tsbuildinfo
+**/tsconfig.tsbuildinfo
 
 # Logs
 **/*.log
 **/npm-debug.log*
+
+# Local
+context.md
 
 # Lock files (regenerate with npm install)
 **/package-lock.json
