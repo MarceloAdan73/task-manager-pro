@@ -1,82 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
-import { supabaseAdmin } from '@/lib/server/supabase';
-import { Parser } from 'json2csv';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
-function getUserIdFromRequest(request: NextRequest): string | null {
+function getAuthToken(request: NextRequest): string | null {
   const authHeader = request.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  
-  const token = authHeader.substring(7);
-  
-  if (token === 'authenticated') {
-    const userIdFromBody = request.nextUrl.searchParams.get('userId');
-    if (userIdFromBody) return userIdFromBody;
-    return null;
-  }
-  
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
-    return decoded.userId;
-  } catch {
-    return null;
-  }
+  return authHeader.substring(7);
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = getUserIdFromRequest(request);
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, error: 'User not authenticated' },
-        { status: 401 }
-      );
+    const token = getAuthToken(request);
+    if (!token) {
+      return NextResponse.json({ success: false, error: 'User not authenticated' }, { status: 401 });
     }
-
-    const { data: tasks, error } = await supabaseAdmin
-      .from('tasks')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching tasks:', error);
-      return NextResponse.json(
-        { success: false, error: 'Error fetching tasks' },
-        { status: 500 }
-      );
-    }
-
-    const csvTasks = (tasks || []).map(task => ({
-      id: task.id,
-      title: task.title,
-      description: task.description || '',
-      priority: task.priority,
-      status: task.completed ? 'Completed' : 'Pending',
-      dueDate: task.due_date ? new Date(task.due_date).toLocaleDateString('en-US') : '',
-      createdAt: new Date(task.created_at).toLocaleDateString('en-US'),
-      updatedAt: new Date(task.updated_at).toLocaleDateString('en-US')
-    }));
-
-    const fields = ['id', 'title', 'description', 'priority', 'status', 'dueDate', 'createdAt', 'updatedAt'];
-    const parser = new Parser({ fields });
-    const csv = parser.parse(csvTasks);
-
-    const timestamp = new Date().toISOString().split('T')[0];
-    
-    return new NextResponse(csv, {
+    const response = await fetch(`${API_BASE_URL}/export/csv`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return new NextResponse(response.body, {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename=tasks_${timestamp}.csv`,
+        'Content-Disposition': `attachment; filename=tasks_${new Date().toISOString().split('T')[0]}.csv`,
       },
     });
-  } catch (error: any) {
-    console.error('Error exporting to CSV:', error);
-    return NextResponse.json(
-      { success: false, error: 'Error exporting to CSV' },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('CSV export proxy error:', error);
+    return NextResponse.json({ success: false, error: 'Error exporting to CSV' }, { status: 500 });
   }
 }
