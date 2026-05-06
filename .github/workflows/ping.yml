@@ -15,7 +15,7 @@ jobs:
         run: curl -s -o /dev/null -w "%{http_code}" https://task-manager-pro-psi.vercel.app || true
 
       - name: Ping Render backend
-        run: curl -s -o /dev/null -w "%{http_code}" https://task-manager-backend.onrender.com/api/health || true
+        run: curl -s -o /dev/null -w "%{http_code}" https://task-manager-pro-37c2.onrender.com/api/health || true
 
       - name: Ping Neon database (wake up)
         run: curl -s -o /dev/null -w "%{http_code}" "https://ep-wispy-cell-amcju1ka.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require" || true
