@@ -33,6 +33,7 @@ jobs:
       - run: cd frontend && npm run test:e2e
         env:
           CI: true
+          NEXT_PUBLIC_API_URL: https://task-manager-pro-37c2.onrender.com/api
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
