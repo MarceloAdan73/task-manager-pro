@@ -1,33 +1,21 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/server/supabase';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export async function GET() {
   try {
-    const { count, error } = await supabaseAdmin
-      .from('tasks')
-      .select('*', { count: 'exact', head: true });
-
-    if (error) {
-      console.error('Health check error:', error);
-      return NextResponse.json({
-        success: false,
-        error: 'Database connection failed',
-        message: error.message
-      }, { status: 500 });
-    }
-
+    const response = await fetch(`${API_BASE_URL}/health`);
     return NextResponse.json({
       success: true,
       status: 'healthy',
-      message: 'Task Manager API - Next.js + Supabase',
+      message: 'Task Manager API - Frontend Proxy',
       timestamp: new Date().toISOString(),
-      database: 'Supabase PostgreSQL',
-      taskCount: count || 0
+      backend: API_BASE_URL
     });
   } catch (error: any) {
     return NextResponse.json({
       success: false,
-      error: 'Database connection error',
+      error: 'Backend connection error',
       message: error.message
     }, { status: 500 });
   }
