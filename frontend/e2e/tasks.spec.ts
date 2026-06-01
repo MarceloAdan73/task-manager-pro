@@ -1,4 +1,37 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+let authToken = '';
+
+async function getToken(page: Page) {
+  try {
+    authToken = await page.evaluate(() => localStorage.getItem('token') || '');
+  } catch {
+    // ignore
+  }
+}
+
+async function cleanupTestTasks() {
+  if (!authToken) return;
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://task-manager-pro-37c2.onrender.com/api';
+    const res = await fetch(`${apiUrl}/tasks`, {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    const tasks = data.data || [];
+    const testPatterns = ['Test Task ', 'Task to Edit ', 'Task to Complete ', 'Task to Delete '];
+    for (const task of tasks) {
+      if (testPatterns.some(p => task.title?.startsWith(p))) {
+        await fetch(`${apiUrl}/tasks/${task.id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+      }
+    }
+  } catch {
+    // Best-effort cleanup
+  }
+}
 
 test.describe('Task CRUD Operations', () => {
   test.beforeEach(async ({ page }) => {
@@ -19,9 +52,14 @@ test.describe('Task CRUD Operations', () => {
       } catch {
         // Continue even if redirect fails
       }
+      await getToken(page);
     }
     
     await page.waitForTimeout(2000);
+  });
+
+  test.afterAll(async () => {
+    await cleanupTestTasks();
   });
 
   test('Test A: Create a new task', async ({ page }) => {
