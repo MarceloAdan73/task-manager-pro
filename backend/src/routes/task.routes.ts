@@ -4,6 +4,7 @@ import {
   getTaskById,
   createTask,
   updateTask,
+  toggleTask,
   deleteTask,
   healthCheck
 } from '../controllers/task.controller'
@@ -17,11 +18,12 @@ router.get('/health', healthCheck)
 // ‚úÖ APPLY MIDDLEWARE TO ALL TASK ROUTES
 router.use(authenticateToken) // All routes after this line require authentication
 
-// Task routes - NOW PROTECTED Ì¥ê
+// Task routes - NOW PROTECTED ÔøΩÔøΩÔøΩ
 router.get('/', getTasks)
 router.get('/:id', getTaskById)
 router.post('/', createTask)
 router.put('/:id', updateTask)
+router.patch('/:id', toggleTask)
 router.delete('/:id', deleteTask)
 
 export default router

@@ -38,3 +38,22 @@ docker-compose up -d
 - `backend/src/server.ts` - Express entry point
 - `frontend/src/lib/api/` - API client with React Query
 - `.env` files are gitignored (not in repo)
+
+## Known Issues & Fixes (Jun 2026)
+
+### Performance - App Freeze with 2000+ Tasks
+
+**Root Causes Found & Fixed:**
+1. **Double render**: `TaskList` had `displayedTasks` state mirrored via `useEffect` — each change rendered 2000 cards twice. Fixed by removing duplicated state, using `tasks` prop directly.
+2. **Framer Motion `layout`**: `layout` prop on `motion.div` recalculated positions for all 2000 items on every render. Removed.
+3. **AuthContext re-renders**: `login`/`logout` without `useCallback`, context value without `useMemo` — re-rendered entire app on every auth state change. Fixed.
+4. **WebSocket listener leak**: `socket.on('join:user')` registered new listeners on every reconnect without cleanup. Fixed with `removeAllListeners('join:user')`.
+5. **Missing DB index**: No index on `userId` in tasks table — every query did sequential scan. Fixed with `@@index([userId])`.
+6. **10min staleTime**: React Query cached data for 10 minutes without invalidation. Reduced to 30s.
+
+### Fixes Applied (commit: performance-audit-2026)
+- `backend/src/config/env.ts` — `dotenv.config()` moved before Zod validation (backend couldn't start locally)
+- `backend/src/socket/socket.ts` — JWT secret uses `envConfig` instead of hardcoded fallback
+- `backend/src/server.ts` — GraphQL JWT fallback `'secret'` removed
+- `backend/src/routes/task.routes.ts` + `task.controller.ts` — Added `PATCH /:id` route for `toggleTaskCompletion` (was returning 404)
+- `frontend/src/lib/api/index.ts` — Added missing `Content-Type` header on PATCH request

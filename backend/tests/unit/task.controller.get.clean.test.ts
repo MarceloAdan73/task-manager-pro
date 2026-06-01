@@ -33,7 +33,7 @@ describe('Task Controller - getTasks (CLEAN)', () => {
   test('should return empty list when no tasks exist', async () => {
     (prisma.task.findMany as jest.Mock).mockResolvedValue([]);
 
-    const req = { userId: 'test-user-123' }; // Added by mock middleware
+    const req = { userId: 'test-user-123' };
     const res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
@@ -67,7 +67,7 @@ describe('Task Controller - getTasks (CLEAN)', () => {
 
     (prisma.task.findMany as jest.Mock).mockResolvedValue(mockTasks);
 
-    const req = { userId: 'test-user-123' }; // Added by mock middleware
+    const req = { userId: 'test-user-123' };
     const res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
@@ -90,7 +90,7 @@ describe('Task Controller - getTasks (CLEAN)', () => {
   test('should handle database error', async () => {
     (prisma.task.findMany as jest.Mock).mockRejectedValue(new Error('Database connection error'));
 
-    const req = { userId: 'test-user-123' }; // Added by mock middleware
+    const req = { userId: 'test-user-123' };
     const res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),

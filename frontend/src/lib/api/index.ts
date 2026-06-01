@@ -103,6 +103,7 @@ export const toggleTaskCompletion = async (id: string): Promise<Task> => {
   const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
     method: 'PATCH',
     headers: {
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     }
   });
