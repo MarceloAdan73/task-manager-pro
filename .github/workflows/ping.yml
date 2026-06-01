@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Vercel frontend
-        run: curl -s -o /dev/null -w "%{http_code}" https://task-manager-pro-psi.vercel.app || true
+        run: curl -s -o /dev/null -w "%{http_code}" https://task-manager-pro-drab-seven.vercel.app || true
 
       - name: Ping Render backend
         run: curl -s -o /dev/null -w "%{http_code}" https://task-manager-pro-37c2.onrender.com/api/health || true
