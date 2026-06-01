@@ -3,7 +3,7 @@
 ## 🎯 Descripción General
 Task Manager Pro es una aplicación full-stack profesional de gestión de tareas. Es el proyecto insignia de Marcelo Adán (GitHub: @MarceloAdan73), demostrando habilidades modernas de desarrollo full-stack con foco en calidad, pruebas y despliegue continuo.
 
-## 🏗️ Arquitectura Actual (Abril 2026)
+## 🏗️ Arquitectura Actual (Junio 2026)
 
 ### Frontend (Next.js 16.1.3 + TypeScript)
 - **Hosting:** Vercel (https://task-manager-pro-psi.vercel.app)
@@ -14,7 +14,8 @@ Task Manager Pro es una aplicación full-stack profesional de gestión de tareas
 
 ### Backend (Express + TypeScript + Prisma)
 - **Estado:** Activo y funcional
-- **Base de Datos:** Supabase PostgreSQL (proyecto: mvcshaltunbwsnfgdojb)
+- **Hosting:** Render (https://task-manager-pro-37c2.onrender.com)
+- **Base de Datos:** Neon PostgreSQL
 - **Autenticación:** JWT con bcrypt
 - **APIs:** REST (/api/auth, /api/tasks, /api/export/csv, /api/export/pdf), GraphQL (/graphql)
 - **Testing:** Jest (30 tests)
@@ -22,10 +23,10 @@ Task Manager Pro es una aplicación full-stack profesional de gestión de tareas
 - **Estructura:** backend/src/ (controllers/, middleware/, routes/, graphql/, prisma/, socket/)
 
 ### DevOps & Despliegue
-- **Frontend:** Vercel (rama main)
-- **Backend:** Render (free tier, cold starts)
-- **Base de Datos:** Supabase (free tier)
-- **CI/CD:** GitHub Actions (ci.yml, test-e2e.yml)
+- **Frontend:** Vercel (rama main, deploy automático en push)
+- **Backend:** Render (free tier, cold starts, deploy automático desde main)
+- **Base de Datos:** Neon PostgreSQL
+- **CI/CD:** GitHub Actions (ci.yml, test-e2e.yml, ping.yml)
 - **Containerización:** Docker (docker-compose.yml)
 
 ## 🔑 Credenciales de Prueba (Demo)
@@ -66,7 +67,7 @@ npm run test:e2e              # 8 tests (Playwright)
 ## ⚠️ Notas Críticas
 1. **WebSockets SOLO funcionan en Docker local**, no en producción Vercel/Render
 2. Las variables de entorno no están subidas al repositorio (seguridad)
-3. Render puede tener cold starts (primer request tarda ~30 segundos)
+3. Render puede tener cold starts (primer request tarda ~50 segundos)
 
 ## 🔍 Auditoría de Performance (Jun 2026)
 
@@ -80,6 +81,7 @@ npm run test:e2e              # 8 tests (Playwright)
 | Listeners WebSocket acumulados | `socket.on('join:user')` sin limpiar listeners previos en reconexión | 🟠 Alto | `removeAllListeners` antes de cada `on` |
 | Datos obsoletos 10 min | `staleTime: 10 * 60 * 1000` en React Query, sin WebSocket en prod | 🟡 Medio | Reducido a 30s |
 | 1700+ tareas duplicadas en prod | `npm start` corría `db seed` en cada deploy/cold start. Seed usaba `create()` no upsert | 🔴 Crítico | Seed skip si ya hay tareas + removido `db seed` del start script y Dockerfile |
+| 1772 tareas duplicadas limpiadas | Seed creó 349 copias de 5 tareas en cold starts de Render | 🔴 Crítico | Eliminadas todas vía Prisma, se creó 1 tarea de resumen técnico |
 | Backend no arrancaba local | `dotenv.config()` llamado DESPUÉS de validar env vars con Zod | 🔴 Crítico | Movido a `env.ts` antes de la validación |
 | Auth bypass potencial | JWT fallback `'secret'` y `'fallback-secret-change-in-production'` hardcodeados | 🔴 Crítico | Usar `envConfig.JWT_SECRET` |
 | Toggle task daba 404 | No existía ruta `PATCH /:id` en backend | 🟠 Alto | Agregada ruta + controller `toggleTask` |
@@ -90,19 +92,18 @@ npm run test:e2e              # 8 tests (Playwright)
 - E2E: 8 tests (Playwright)
 
 ## 📁 Estructura de Ramas
-- **main:** Producción (desplegada en Vercel/Render/Supabase)
+- **main:** Producción (desplegada en Vercel + Render con Neon PostgreSQL)
 - **dev:** Desarrollo (mantiene las mismas implementaciones que main + mejoras)
 
 ### Diferencias main vs dev:
 - **E2E Tests:** Playwright (login, CRUD, dark-mode)
 - **API:** Uso directo de API routes en lugar de cliente admin
-- **RLS:** Políticas relajadas para tareas
 
 ## 🔧 Variables de Entorno Clave
 
 Backend (.env):
 ```env
-DATABASE_URL="postgresql://postgres:TaskPro2026@db.mvcshaltunbwsnfgdojb.supabase.co:5432/postgres?schema=public"
+DATABASE_URL="postgresql://neondb_owner:npg_fLa6S1KPEyeh@ep-wispy-cell-amcju1ka.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require"
 JWT_SECRET="mi_clave_super_segura"
 PORT=3005
 ```

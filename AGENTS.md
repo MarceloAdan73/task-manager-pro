@@ -29,7 +29,9 @@ docker-compose up -d
 
 - **WebSockets**: Socket.io works only in Docker local setup. Production (Vercel+Render) has no WebSocket support.
 - **Demo credentials**: `demo@taskmanager.com` / `demo123`
-- **Database**: Supabase PostgreSQL in production, local PostgreSQL in Docker
+- **Database**: Neon PostgreSQL in production, local PostgreSQL in Docker
+- **Backend URL**: https://task-manager-pro-37c2.onrender.com
+- **Frontend URL**: https://task-manager-pro-psi.vercel.app
 - **CI**: Uses Node.js 24 (set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` in GitHub Actions env)
 
 ## Key Files
@@ -51,7 +53,8 @@ docker-compose up -d
 5. **Missing DB index**: No index on `userId` in tasks table — every query did sequential scan. Fixed with `@@index([userId])`.
 6. **10min staleTime**: React Query cached data for 10 minutes without invalidation. Reduced to 30s.
 
-7. **Seed duplicaba tareas en cada deploy**: `npm start` corría `npx prisma db seed` en cada inicio. El seed usaba `prisma.task.create()` (no upsert). Cada cold start de Render creaba 5 tareas nuevas → cientos de cold starts = miles de tareas duplicadas. Fixed: seed verifica si ya existen tareas, y se removió `db seed` del `start` script y Dockerfile.
+7. **Seed duplicaba tareas en cada deploy**: `npm start` corría `npx prisma db seed` en cada inicio. El seed usaba `prisma.task.create()` (no upsert). Cada cold start de Render creaba 5 tareas nuevas → cientos de cold starts = miles de tareas duplicadas (~1772). Fixed: seed verifica si ya existen tareas, y se removió `db seed` del `start` script y Dockerfile.
+8. **DB Cleanup (Jun 2026)**: Se eliminaron manualmente las 1772 tareas duplicadas de la DB Neon y se creó 1 tarea de resumen técnico como única nota de ejemplo.
 
 ### Fixes Applied (commit: performance-audit-2026)
 - `backend/src/config/env.ts` — `dotenv.config()` moved before Zod validation (backend couldn't start locally)
