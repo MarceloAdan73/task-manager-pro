@@ -51,6 +51,8 @@ docker-compose up -d
 5. **Missing DB index**: No index on `userId` in tasks table — every query did sequential scan. Fixed with `@@index([userId])`.
 6. **10min staleTime**: React Query cached data for 10 minutes without invalidation. Reduced to 30s.
 
+7. **Seed duplicaba tareas en cada deploy**: `npm start` corría `npx prisma db seed` en cada inicio. El seed usaba `prisma.task.create()` (no upsert). Cada cold start de Render creaba 5 tareas nuevas → cientos de cold starts = miles de tareas duplicadas. Fixed: seed verifica si ya existen tareas, y se removió `db seed` del `start` script y Dockerfile.
+
 ### Fixes Applied (commit: performance-audit-2026)
 - `backend/src/config/env.ts` — `dotenv.config()` moved before Zod validation (backend couldn't start locally)
 - `backend/src/socket/socket.ts` — JWT secret uses `envConfig` instead of hardcoded fallback
