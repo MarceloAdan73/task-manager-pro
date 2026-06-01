@@ -1,17 +1,8 @@
 {
-  "name": "task-manager-pro",
-  "version": 2,
   "builds": [
     {
       "src": "package.json",
       "use": "@vercel/next"
     }
-  ],
-"env": {
-    "NEXT_PUBLIC_API_URL": "https://task-manager-pro-37c2.onrender.com/api",
-    "NEXT_PUBLIC_SOCKET_URL": "https://task-manager-backend.onrender.com",
-    "NEXT_PUBLIC_SUPABASE_URL": "https://mvcshaltunbwsnfgdojb.supabase.co",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_k3wjFrupWCAO_ykTRkNECQ_VEcEzSIE"
-  },
-  "regions": ["iad1"]
+  ]
 }

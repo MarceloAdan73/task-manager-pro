@@ -31,7 +31,7 @@ docker-compose up -d
 - **Demo credentials**: `demo@taskmanager.com` / `demo123`
 - **Database**: Neon PostgreSQL in production, local PostgreSQL in Docker
 - **Backend URL**: https://task-manager-pro-37c2.onrender.com
-- **Frontend URL**: https://task-manager-pro-drab-seven.vercel.app
+- **Frontend URL**: https://task-manager-pro-psi.vercel.app
 - **CI**: Uses Node.js 24 (set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` in GitHub Actions env)
 
 ## Key Files
