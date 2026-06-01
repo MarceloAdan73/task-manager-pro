@@ -22,49 +22,54 @@ async function main() {
   
   console.log('✅ Usuario demo creado:', demoUser.email)
 
-  const tasks = [
-    {
-      title: 'Configurar PostgreSQL',
-      description: 'Conectar backend con base de datos real',
-      priority: Priority.HIGH,
-      completed: true,
-      userId: demoUser.id,
-    },
-    {
-      title: 'Implementar Prisma ORM',
-      description: 'Crear modelos y migraciones',
-      priority: Priority.HIGH,
-      completed: true,
-      userId: demoUser.id,
-    },
-    {
-      title: 'Implementar autenticación JWT',
-      description: 'Sistema de login para usuarios',
-      priority: Priority.URGENT,
-      completed: false,
-      userId: demoUser.id,
-    },
-    {
-      title: 'Testear endpoints con base de datos',
-      description: 'Verificar que todo funcione correctamente',
-      priority: Priority.MEDIUM,
-      completed: false,
-      userId: demoUser.id,
-    },
-    {
-      title: 'Documentar decisiones técnicas',
-      description: 'Actualizar README con nueva arquitectura',
-      priority: Priority.LOW,
-      completed: false,
-      userId: demoUser.id,
-    },
-  ]
+  const existingCount = await prisma.task.count({ where: { userId: demoUser.id } });
+  if (existingCount > 0) {
+    console.log(`⏭️  Skip tareas: ya existen ${existingCount} tareas para el usuario demo`);
+  } else {
+    const tasks = [
+      {
+        title: 'Configurar PostgreSQL',
+        description: 'Conectar backend con base de datos real',
+        priority: Priority.HIGH,
+        completed: true,
+        userId: demoUser.id,
+      },
+      {
+        title: 'Implementar Prisma ORM',
+        description: 'Crear modelos y migraciones',
+        priority: Priority.HIGH,
+        completed: true,
+        userId: demoUser.id,
+      },
+      {
+        title: 'Implementar autenticación JWT',
+        description: 'Sistema de login para usuarios',
+        priority: Priority.URGENT,
+        completed: false,
+        userId: demoUser.id,
+      },
+      {
+        title: 'Testear endpoints con base de datos',
+        description: 'Verificar que todo funcione correctamente',
+        priority: Priority.MEDIUM,
+        completed: false,
+        userId: demoUser.id,
+      },
+      {
+        title: 'Documentar decisiones técnicas',
+        description: 'Actualizar README con nueva arquitectura',
+        priority: Priority.LOW,
+        completed: false,
+        userId: demoUser.id,
+      },
+    ]
 
-  for (const taskData of tasks) {
-    const task = await prisma.task.create({
-      data: taskData,
-    })
-    console.log('✅ Tarea creada:', task.title)
+    for (const taskData of tasks) {
+      const task = await prisma.task.create({
+        data: taskData,
+      })
+      console.log('✅ Tarea creada:', task.title)
+    }
   }
 
   const taskCount = await prisma.task.count()

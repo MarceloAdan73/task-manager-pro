@@ -79,6 +79,7 @@ npm run test:e2e              # 8 tests (Playwright)
 | Re-renders infinitos | `AuthContext` sin `useCallback`/`useMemo` — cada cambio re-renderizaba toda la app | 🟠 Alto | Envueltos en `useCallback`/`useMemo` |
 | Listeners WebSocket acumulados | `socket.on('join:user')` sin limpiar listeners previos en reconexión | 🟠 Alto | `removeAllListeners` antes de cada `on` |
 | Datos obsoletos 10 min | `staleTime: 10 * 60 * 1000` en React Query, sin WebSocket en prod | 🟡 Medio | Reducido a 30s |
+| 1700+ tareas duplicadas en prod | `npm start` corría `db seed` en cada deploy/cold start. Seed usaba `create()` no upsert | 🔴 Crítico | Seed skip si ya hay tareas + removido `db seed` del start script y Dockerfile |
 | Backend no arrancaba local | `dotenv.config()` llamado DESPUÉS de validar env vars con Zod | 🔴 Crítico | Movido a `env.ts` antes de la validación |
 | Auth bypass potencial | JWT fallback `'secret'` y `'fallback-secret-change-in-production'` hardcodeados | 🔴 Crítico | Usar `envConfig.JWT_SECRET` |
 | Toggle task daba 404 | No existía ruta `PATCH /:id` en backend | 🟠 Alto | Agregada ruta + controller `toggleTask` |
