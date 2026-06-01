@@ -33,6 +33,7 @@ model Task {
   userId      String   // Foreign key (String porque User.id es cuid)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("tasks")
 }
 

@@ -1,7 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
@@ -38,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -64,25 +63,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('userId', user.id);
     localStorage.setItem('user', JSON.stringify(user));
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('userId');
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    user,
+    token,
+    isAuthenticated: !!token,
+    isLoading,
+    login,
+    logout,
+  }), [user, token, isLoading, login, logout]);
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      token,
-      isAuthenticated: !!token,
-      isLoading,
-      login,
-      logout,
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

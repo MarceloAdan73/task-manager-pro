@@ -1,6 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { createServer } from 'http';
 import taskRoutes from './routes/task.routes';
 import authRoutes from './routes/auth.routes';
@@ -20,8 +19,6 @@ import { envConfig } from './config/env';
 console.log('🚀 ========================================');
 console.log('🚀 SERVER.TS INICIANDO - VERSIÓN CON SEGURIDAD MEJORADA');
 console.log('🚀 ========================================');
-
-dotenv.config();
 
 const app: Application = express();
 const PORT = envConfig.PORT;
@@ -94,7 +91,7 @@ async function startGraphQL() {
         const token = authHeader.substring(7);
         try {
           const jwt = require('jsonwebtoken');
-          const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+          const decoded = jwt.verify(token, envConfig.JWT_SECRET);
           return { userId: decoded.userId };
         } catch {}
       }

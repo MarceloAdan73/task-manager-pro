@@ -21,15 +21,14 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
     }
 
     const tasks = await prisma.task.findMany({
-      where: { userId }, // ✅ Filtrar por usuario
-      orderBy: { createdAt: 'desc' }
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
     });
 
-    const formattedTasks = tasks.map(formatTaskForFrontend);
-
-    console.log(`${formattedTasks.length} tareas obtenidas de PostgreSQL para user ${userId}`);
-
-    res.json({ success: true, data: formattedTasks });
+    res.json({
+      success: true,
+      data: tasks.map(formatTaskForFrontend),
+    });
   } catch (error: any) {
     console.error('Error obteniendo tareas:', error);
     res.status(500).json({
@@ -256,6 +255,49 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
       success: false,
       error: 'Error updating task'
     });
+  }
+};
+
+// PATCH /api/tasks/:id - Toggle task completion
+export const toggleTask = async (req: Request, res: Response): Promise<void> => {
+  const id = String(req.params.id);
+  const userId = req.userId;
+
+  try {
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'User not authenticated' });
+      return;
+    }
+
+    const existingTask = await prisma.task.findUnique({ where: { id } });
+
+    if (!existingTask) {
+      res.status(404).json({ success: false, error: 'Task not found' });
+      return;
+    }
+
+    if (existingTask.userId !== userId) {
+      res.status(403).json({ success: false, error: 'You do not have permission to modify this task' });
+      return;
+    }
+
+    const task = await prisma.task.update({
+      where: { id },
+      data: { completed: !existingTask.completed },
+    });
+
+    emitTaskEvent({
+      type: 'task:updated',
+      taskId: task.id,
+      userId,
+      data: formatTaskForFrontend(task),
+      timestamp: new Date().toISOString(),
+    });
+
+    res.json({ success: true, data: formatTaskForFrontend(task) });
+  } catch (error: any) {
+    console.error('Error toggling task:', error);
+    res.status(500).json({ success: false, error: 'Error toggling task' });
   }
 };
 

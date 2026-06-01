@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Loader2, 
@@ -43,15 +43,8 @@ const TaskList: React.FC<TaskListProps> = ({
   onToggleExpand,
   expandedTaskId = null,
 }) => {
-  const [displayedTasks, setDisplayedTasks] = useState<Task[]>(tasks);
-  
-  // Sync displayed tasks with actual data
-  useEffect(() => {
-    setDisplayedTasks(tasks);
-  }, [tasks]);
-
-  const totalTasks = displayedTasks.length;
-  const completedTasks = displayedTasks.filter(t => t.completed).length;
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(t => t.completed).length;
   const pendingTasks = totalTasks - completedTasks;
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   
@@ -67,18 +60,9 @@ const TaskList: React.FC<TaskListProps> = ({
 
   const progressWidthClass = getProgressWidthClass();
 
-  // Handle delete with exit animation
-  const handleDeleteWithAnimation = (id: string) => {
-    // First animate removal from UI
-    setDisplayedTasks(prev => prev.filter(task => task.id !== id));
-    
-    // Then actually delete after animation completes
-    setTimeout(() => {
-      if (onDelete) {
-        onDelete(id);
-      }
-    }, 300);
-  };
+  const handleDeleteWithAnimation = useCallback((id: string) => {
+    onDelete?.(id);
+  }, [onDelete]);
 
   // Loading and error states
   if (isLoading) {
@@ -120,7 +104,7 @@ const TaskList: React.FC<TaskListProps> = ({
     );
   }
 
-  if (displayedTasks.length === 0) {
+  if (tasks.length === 0) {
     return (
       <div className="rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gradient-to-b from-gray-50/50 to-gray-100/30 dark:from-gray-900/30 dark:to-gray-800/20 p-10 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 mb-4">
@@ -187,10 +171,9 @@ const TaskList: React.FC<TaskListProps> = ({
       {/* Task Cards Container */}
       <div className="space-y-3">
         <AnimatePresence mode="popLayout">
-          {displayedTasks.map((task) => (
+          {tasks.map((task) => (
             <motion.div
               key={task.id}
-              layout
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ 

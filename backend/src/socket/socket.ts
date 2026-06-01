@@ -5,8 +5,6 @@ import { envConfig } from '../config/env';
 
 let io: Server | null = null;
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-in-production';
-
 export interface TaskEvent {
   type: 'task:created' | 'task:updated' | 'task:deleted';
   taskId: string;
@@ -27,7 +25,7 @@ function authMiddleware(socket: Socket, next: (err?: Error) => void) {
     return next(new Error('Authentication token required'));
   }
 
-  jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+  jwt.verify(token, envConfig.JWT_SECRET, (err: any, decoded: any) => {
     if (err) {
       console.warn(`🔒 Socket auth failed: Invalid token (socket: ${socket.id})`);
       if (err.name === 'TokenExpiredError') {
@@ -62,7 +60,7 @@ export function initializeSocket(httpServer: HttpServer): Server {
   io.on('connection', (socket: AuthenticatedSocket) => {
     console.log(`🔌 Client connected: ${socket.id} (user: ${socket.userId})`);
 
-    socket.on('join:user', (requestedUserId: string) => {
+    socket.removeAllListeners('join:user').on('join:user', (requestedUserId: string) => {
       if (!socket.userId) {
         console.warn(`⚠️ Unauthorized join:user attempt from socket ${socket.id}`);
         return;

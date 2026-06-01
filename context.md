@@ -64,9 +64,29 @@ npm run test:e2e              # 8 tests (Playwright)
 ```
 
 ## ⚠️ Notas Críticas
-1. **WebSockets SOLO funcionan en Docker local**, no en producción Vercel/Supabase
+1. **WebSockets SOLO funcionan en Docker local**, no en producción Vercel/Render
 2. Las variables de entorno no están subidas al repositorio (seguridad)
 3. Render puede tener cold starts (primer request tarda ~30 segundos)
+
+## 🔍 Auditoría de Performance (Jun 2026)
+
+### Problemas Detectados que Causaban Congelamiento
+
+| Síntoma | Causa Raíz | Severidad | Fix |
+|---------|-----------|-----------|-----|
+| App congelada con 2000+ tareas | `TaskList` sin virtualización + doble render por `displayedTasks` | 🔴 Crítico | Eliminado `displayedTasks` + `layout` de Framer Motion |
+| App congelada al cargar | Sin índice `@@index([userId])` en tabla tasks + sin paginación | 🔴 Crítico | Agregado índice en schema Prisma |
+| Re-renders infinitos | `AuthContext` sin `useCallback`/`useMemo` — cada cambio re-renderizaba toda la app | 🟠 Alto | Envueltos en `useCallback`/`useMemo` |
+| Listeners WebSocket acumulados | `socket.on('join:user')` sin limpiar listeners previos en reconexión | 🟠 Alto | `removeAllListeners` antes de cada `on` |
+| Datos obsoletos 10 min | `staleTime: 10 * 60 * 1000` en React Query, sin WebSocket en prod | 🟡 Medio | Reducido a 30s |
+| Backend no arrancaba local | `dotenv.config()` llamado DESPUÉS de validar env vars con Zod | 🔴 Crítico | Movido a `env.ts` antes de la validación |
+| Auth bypass potencial | JWT fallback `'secret'` y `'fallback-secret-change-in-production'` hardcodeados | 🔴 Crítico | Usar `envConfig.JWT_SECRET` |
+| Toggle task daba 404 | No existía ruta `PATCH /:id` en backend | 🟠 Alto | Agregada ruta + controller `toggleTask` |
+
+### Tests
+- Frontend: 56 tests (44 pass, 12 skipped)
+- Backend: 30 tests (30 pass)
+- E2E: 8 tests (Playwright)
 
 ## 📁 Estructura de Ramas
 - **main:** Producción (desplegada en Vercel/Render/Supabase)
