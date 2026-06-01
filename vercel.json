@@ -1,6 +1,4 @@
 {
-  "name": "task-manager-pro",
-  "version": 2,
   "builds": [
     {
       "src": "frontend/package.json",
@@ -12,6 +10,5 @@
     "NEXT_PUBLIC_SOCKET_URL": "https://task-manager-backend.onrender.com",
     "NEXT_PUBLIC_SUPABASE_URL": "https://mvcshaltunbwsnfgdojb.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_k3wjFrupWCAO_ykTRkNECQ_VEcEzSIE"
-  },
-  "regions": ["iad1"]
+  }
 }

@@ -6,7 +6,7 @@ Task Manager Pro es una aplicación full-stack profesional de gestión de tareas
 ## 🏗️ Arquitectura Actual (Junio 2026)
 
 ### Frontend (Next.js 16.1.3 + TypeScript)
-- **Hosting:** Vercel (https://task-manager-pro-drab-seven.vercel.app)
+- **Hosting:** Vercel (https://taskmanager-pro-pi.vercel.app)
 - **Componentes Principales:** Dashboard, Login, CRUD tareas, Modo Oscuro, Export CSV/PDF, GraphQL Playground
 - **Librerías Clave:** React Query v5, Tailwind CSS, Framer Motion, file-saver, jspdf
 - **Testing:** Jest + Playwright (94 tests: 56 frontend + 30 backend + 8 E2E)
