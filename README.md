@@ -21,7 +21,7 @@
 
 | Environment | 🔗 URL | 📊 Status |
 |:-----------:|:-------|:---------:|
-| **🎨 Frontend** <br/> (Vercel) | [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://task-manager-pro-psi.vercel.app) | 🟢 Active |
+| **🎨 Frontend** <br/> (Vercel) | [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://task-manager-pro-drab-seven.vercel.app) | 🟢 Active |
 | **🗄️ Database** <br/> (Supabase) | [![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com) | 🟢 Active |
 
 
@@ -267,7 +267,7 @@ task-manager-pro/
 ### **Option 1: Try Live Demo (No Installation)**
 Simply visit:
 ```
-https://task-manager-pro-psi.vercel.app
+https://task-manager-pro-drab-seven.vercel.app
 ```
 Use demo credentials:
 ```
