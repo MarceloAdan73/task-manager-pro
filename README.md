@@ -22,7 +22,7 @@
 | Environment | 🔗 URL | 📊 Status |
 |:-----------:|:-------|:---------:|
 | **🎨 Frontend** <br/> (Vercel) | [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://taskmanager-pro-pi.vercel.app) | 🟢 Active |
-| **🗄️ Database** <br/> (Supabase) | [![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com) | 🟢 Active |
+| **🗄️ Database** <br/> (Neon PostgreSQL) | [![Neon](https://img.shields.io/badge/Neon-00BFA7?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech) | 🟢 Active |
 
 
 
@@ -332,7 +332,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-> ⚡ **WebSocket Feature:** Real-time notifications via Socket.io are available only in local Docker setup. Production deployment (Vercel + Supabase) uses Supabase API for data operations.
+> ⚡ **WebSocket Feature:** Real-time notifications via Socket.io are available only in local Docker setup. Production deployment (Vercel + Render) has NO WebSocket support.
 
 ---
 
@@ -426,7 +426,7 @@ ws://localhost:3005
 npx wscat -c ws://localhost:3005 -t "Bearer <jwt_token>"
 ```
 
-> **Note**: WebSocket functionality is restricted to local Docker deployment for demonstration. Production deployments (Vercel + Render) utilize Supabase for real-time subscriptions.
+> **Note**: WebSocket functionality is restricted to local Docker deployment for demonstration. Production deployments (Vercel + Render) have NO WebSocket support.
 
 ---
 
